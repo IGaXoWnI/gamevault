@@ -17,8 +17,42 @@ create table games(
     game_description varchar(250) not null ,
     game_img varchar(300) not null ,
     genre varchar(50) not null ,
-    added_at timestamp not null ,
+    added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
     release_date date not null ,
     user_id bigint references users(user_id) 
 
 );
+-- critique:
+CREATE TABLE reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,        
+    user_id INT NOT NULL,                     
+    game_id INT NOT NULL,                     
+             
+    review TEXT,                            
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ,
+    FOREIGN KEY (game_id) REFERENCES games(game_id) 
+);
+-- bibliotheques
+CREATE TABLE user_games (
+    id INT AUTO_INCREMENT PRIMARY KEY,         
+    user_id INT,                               
+    game_id INT,                               
+    status ENUM('en_cours', 'termine', 'abandonné') NOT NULL,  
+                
+    play_time INT,                            
+    is_favorite BOOLEAN,                       
+   added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
+   
+    FOREIGN KEY (user_id) REFERENCES users(user_id),  
+    FOREIGN KEY (game_id) REFERENCES games(game_id)    
+);
+-- chat_messages
+create TABLE chat_messages{
+    id INT AUTO_INCREMENT PRIMARY KEY,
+     user_id INT, 
+     message TEXT,
+     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+       FOREIGN KEY (user_id) REFERENCES users(user_id)
+}
+-- abandessement
