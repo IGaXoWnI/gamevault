@@ -77,8 +77,9 @@ class User {
                 $this->role = $user['role'];
                 $this->isBanned = $user['is_banned'];
 
-                // Set session
+                
                 $_SESSION['user_id'] = $this->id;
+                $_SESSION['username'] = $this->username;
                 $_SESSION['role'] = $this->role;
 
                 return [
