@@ -24,7 +24,7 @@ create table games(
 );
 
 CREATE TABLE reviews (
-    id INT AUTO_INCREMENT PRIMARY KEY,        
+    review_id INT AUTO_INCREMENT PRIMARY KEY,        
     user_id INT NOT NULL,                     
     game_id INT NOT NULL,                     
              
@@ -49,9 +49,10 @@ CREATE TABLE user_games (
 );
 
 create TABLE chat_messages{
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    chat_id INT AUTO_INCREMENT PRIMARY KEY,
      user_id INT, 
      message TEXT,
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        FOREIGN KEY (user_id) REFERENCES users(user_id)
 }
+-- abandessement
