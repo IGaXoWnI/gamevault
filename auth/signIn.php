@@ -1,40 +1,32 @@
 <?php
-require_once "../conn/conn.php" ;   
+session_start();
+require_once '../classes/User.php';
+require_once '../classes/Database.php';
 
-if($_SERVER["REQUEST_METHOD"] === "POST"){
-    $email = $_POST["email"] ?? "" ;
-    $password = $_POST["password"] ?? "" ;
-
-
-
-    if(empty($email)||empty($password)){
-        echo "all fields required !!" ;
-    }
+$pdo = new Database();
 
 
-    try{
-        $sql = "SELECT * FROM users WHERE user_email = :email" ;
-        $stmt = $pdo->prepare($sql) ;
-        $stmt->execute([
-            ":email" => $email 
-        ]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC) ;
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    $email = $_POST["email"];
+    $password = $_POST["password"];
 
 
-        if($user && password_verify($password , $user["user_password"])){
-            session_start();
-            $_SESSION["username"] = $user["name"] ;
-            $_SESSION["email"] = $user["email"] ;
-            header("Location:../home.php");
-            exit ;
+    try {
+        $user = new User($pdo);
+        $result = $user->login($email, $password);
+
+        if($result["success"]){
+            header("Location: ../home.php");
+            exit();
+        }else{
+            echo "Login failed: " . $result["message"] . "<br>";
+
         }
-
-    }catch(PDOException $e){
-        die("the error is " . $e->getMessage()) ;
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
-
-
 
 ?>
 
@@ -44,7 +36,6 @@ if($_SERVER["REQUEST_METHOD"] === "POST"){
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In</title>
-    <!-- Add Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center">

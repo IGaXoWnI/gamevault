@@ -1,31 +1,29 @@
 <?php
-require_once "../conn/conn.php";    
+
+require_once '../classes/User.php';  
+require_once '../classes/Database.php';  
+$pdo = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+
     $username = $_POST["username"];
     $email = $_POST["email"];
     $password = $_POST["password"];
     $role = $_POST["role"]; 
 
-    if (empty($username) || empty($email) || empty($password) || empty($role)) {
-        echo "All fields are required!";
-        exit;
-    }
-
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
     try {
-        $sql = "INSERT INTO users(username, user_email, user_password, role) VALUES(:name, :email, :password, :role)";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ":name" => $username,
-            ":email" => $email,
-            ":password" => $hashed_password,
-            ":role" => $role, 
-        ]);
-        header("Location: signIn.php");
-    } catch (PDOException $e) {
-        die("The error is " . $e->getMessage());
+        $user = new User($pdo);
+        $result = $user->register($username, $email, $password, $role);
+
+        if($result["success"]){
+            header("Location: ../auth/signIn.php");
+            exit();
+        } else {
+            echo "Registration failed: ";
+        }   
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
 ?>
