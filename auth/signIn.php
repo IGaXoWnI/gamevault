@@ -3,6 +3,8 @@ session_start();
 require_once '../classes/User.php';
 require_once '../classes/Database.php';
 
+$user_role = $_SESSION['role']; 
+
 $pdo = new Database();
 
 
@@ -17,11 +19,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $result = $user->login($email, $password);
 
         if($result["success"]){
-            header("Location: ../home.php");
-            exit();
-        }else{
+            if($result["user"]["role"] === "admin"){
+                header("Location: ../view/home.php");
+                exit();
+            } else {
+                header("Location: ../library/index.php");
+                exit();
+            }   
+        } else {
             echo "Login failed: " . $result["message"] . "<br>";
-
         }
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
