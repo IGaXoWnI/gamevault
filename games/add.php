@@ -29,7 +29,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                     </div>
                 </div>
 
-                <form action="process_add_game.php" method="POST" enctype="multipart/form-data" class="bg-gray-800 p-6 rounded-lg">
+                <form action="process_add_game.php" method="POST" class="bg-gray-800 p-6 rounded-lg">
                     <div class="grid grid-cols-2 gap-6">
                         <div class="col-span-2">
                             <label class="block text-sm font-medium mb-2">Titre du jeu</label>
@@ -43,13 +43,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
                         <div>
                             <label class="block text-sm font-medium mb-2">Genre</label>
-                            <select name="genre" class="w-full bg-gray-700 rounded-lg p-3 text-white">
-                                <option value="action">Action</option>
-                                <option value="adventure">Aventure</option>
-                                <option value="rpg">RPG</option>
-                                <option value="strategy">Stratégie</option>
-                                <option value="sports">Sports</option>
-                            </select>
+                            <input type="text" name="genre" required class="w-full bg-gray-700 rounded-lg p-3 text-white">
                         </div>
 
                         <div>
@@ -57,14 +51,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <input type="date" name="release_date" class="w-full bg-gray-700 rounded-lg p-3 text-white">
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Prix (€)</label>
-                            <input type="number" step="0.01" name="price" class="w-full bg-gray-700 rounded-lg p-3 text-white">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Image du jeu</label>
-                            <input type="file" name="game_image" accept="image/*" class="w-full bg-gray-700 rounded-lg p-3 text-white">
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium mb-2">Image URL</label>
+                            <input type="url" name="game_image" class="w-full bg-gray-700 rounded-lg p-3 text-white">
                         </div>
 
                         <div class="col-span-2">
