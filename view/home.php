@@ -2,7 +2,7 @@
 session_start();
 $username = $_SESSION['username'];
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: auth/signIn.php');
+    header('Location: ../auth/signIn.php');
     exit();
 }
 ?>
