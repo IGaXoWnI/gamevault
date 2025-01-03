@@ -22,7 +22,7 @@ class User {
     public function setUsername($username) { $this->username = $username; }
     public function setRole($role) { $this->role = $role; }
 
-    public function register($username, $email, $password ,) {
+    public function register($username, $email, $password ,$role) {
         try {
             $existingUser = $this->db->select(
                 "SELECT * FROM users WHERE user_email = ?", 
@@ -101,13 +101,11 @@ class User {
         }
     }
 
-    // Update user profile
     public function updateProfile($userId, $data) {
         try {
             $updates = [];
             $params = [];
 
-            // Build dynamic update query based on provided data
             if (isset($data['username'])) {
                 $updates[] = "username = ?";
                 $params[] = $data['username'];
@@ -125,7 +123,6 @@ class User {
                 return ['success' => false, 'message' => 'No data to update'];
             }
 
-            // Add user_id to params
             $params[] = $userId;
 
             $affected = $this->db->update(
@@ -144,10 +141,10 @@ class User {
         }
     }
 
-    // Ban/Unban user
+
     public function banUser($userId, $ban = true) {
         try {
-            // Check if user has admin role
+
             if ($_SESSION['role'] !== 'admin') {
                 return ['success' => false, 'message' => 'Unauthorized action'];
             }
@@ -168,7 +165,6 @@ class User {
         }
     }
 
-    // Load user by ID
     public function loadUser($userId) {
         try {
             $user = $this->db->select(

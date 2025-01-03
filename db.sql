@@ -22,7 +22,7 @@ create table games(
     user_id bigint references users(user_id) 
 
 );
--- critique:
+
 CREATE TABLE reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,        
     user_id INT NOT NULL,                     
@@ -33,7 +33,7 @@ CREATE TABLE reviews (
     FOREIGN KEY (user_id) REFERENCES users(user_id) ,
     FOREIGN KEY (game_id) REFERENCES games(game_id) 
 );
--- bibliotheques
+
 CREATE TABLE user_games (
     id INT AUTO_INCREMENT PRIMARY KEY,         
     user_id INT,                               
@@ -47,7 +47,7 @@ CREATE TABLE user_games (
     FOREIGN KEY (user_id) REFERENCES users(user_id),  
     FOREIGN KEY (game_id) REFERENCES games(game_id)    
 );
--- chat_messages
+
 create TABLE chat_messages{
     chat_id INT AUTO_INCREMENT PRIMARY KEY,
      user_id INT, 
@@ -55,20 +55,4 @@ create TABLE chat_messages{
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        FOREIGN KEY (user_id) REFERENCES users(user_id)
 }
-CREATE TABLE favorite_games (
-   favorite _id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,         
-    game_id INT,       
-  
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (game_id) REFERENCES games(game_id)
-);
-CREATE TABLE bans (
-    bans_id INT AUTO_INCREMENT PRIMARY KEY,  
-    user_id INT NOT NULL,                    
-    banned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-  
-);
-
-
+-- abandessement
