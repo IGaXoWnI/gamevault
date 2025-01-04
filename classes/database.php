@@ -1,6 +1,6 @@
 <?php
 class Database {
-    private $host = 'localhost:3308';
+    private $host = 'localhost';
     private $dbname = 'gamevault';
     private $username = 'root';
     private $password = '';

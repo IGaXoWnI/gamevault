@@ -60,5 +60,25 @@ class Game {
 
        
     }
+
+
+    public function showGames() {
+        $games = "SELECT * FROM games";
+        $games_list = $this->pdo->prepare($games);
+        $games_list->execute();
+        return $games_list->fetchAll();
+    }
+
+
+    public function deleteGame($game_id) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM games WHERE game_id = ?");
+            return $stmt->execute([$game_id]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
 }
 ?>
