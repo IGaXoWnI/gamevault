@@ -101,11 +101,13 @@ class User {
         }
     }
 
+    // Update user profile
     public function updateProfile($userId, $data) {
         try {
             $updates = [];
             $params = [];
 
+            // Build dynamic update query based on provided data
             if (isset($data['username'])) {
                 $updates[] = "username = ?";
                 $params[] = $data['username'];
@@ -123,6 +125,7 @@ class User {
                 return ['success' => false, 'message' => 'No data to update'];
             }
 
+            // Add user_id to params
             $params[] = $userId;
 
             $affected = $this->db->update(
@@ -141,10 +144,10 @@ class User {
         }
     }
 
-
+    // Ban/Unban user
     public function banUser($userId, $ban = true) {
         try {
-
+            // Check if user has admin role
             if ($_SESSION['role'] !== 'admin') {
                 return ['success' => false, 'message' => 'Unauthorized action'];
             }
@@ -165,6 +168,7 @@ class User {
         }
     }
 
+    // Load user by ID
     public function loadUser($userId) {
         try {
             $user = $this->db->select(
