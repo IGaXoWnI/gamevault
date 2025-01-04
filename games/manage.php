@@ -5,6 +5,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
     exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">

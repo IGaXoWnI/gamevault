@@ -1,10 +1,31 @@
 <?php
-session_start();
+include '../classes/game.php';
+
+
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
     exit();
 }
+
+
+
+
+
+ if(isset($_POST['ajoute'])){
+    $title=$_POST['title'];
+    $description=$_POST['description'];
+    $genre=$_POST['genre'];
+    $releaseDate=$_POST['release_date'];
+    $avatar=$_POST['game_image'];
+      
+    if(!empty($title) &&!empty($description)
+    &&!empty($genre)&& !empty($releaseDate)&&!empty($avatar) ){
+        $game=new Game();
+        $game->addGame($title,$description,$genre,$avatar,$releaseDate);
+
+}}
+
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +50,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                     </div>
                 </div>
 
-                <form action="process_add_game.php" method="POST" class="bg-gray-800 p-6 rounded-lg">
+                <form action="add.php" method="POST" class="bg-gray-800 p-6 rounded-lg">
                     <div class="grid grid-cols-2 gap-6">
                         <div class="col-span-2">
                             <label class="block text-sm font-medium mb-2">Titre du jeu</label>
@@ -57,7 +78,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         </div>
 
                         <div class="col-span-2">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition">
+                            <button type="submit"  name="ajoute"class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition">
                                 Ajouter le jeu
                             </button>
                         </div>
