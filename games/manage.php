@@ -1,5 +1,26 @@
 <?php
 session_start();
+require_once '../classes/game.php';
+
+if (isset($_POST['delete']) && isset($_POST['game_id'])) {
+    try {
+        $game = new Game();
+        $result = $game->deleteGame($_POST['game_id']);
+        
+        if ($result) {
+            header('Location: manage.php');
+        } else {
+            $_SESSION['error'] = "Failed to delete the game";
+            header('Location: manage.php');
+        }
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "An error occurred while deleting the game";
+        header('Location: manage.php');
+        exit();
+    }
+}
+
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
@@ -38,34 +59,44 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <tr>
                                 <th class="px-6 py-3 text-left">Image</th>
                                 <th class="px-6 py-3 text-left">Titre</th>
+                                <th class="px-6 py-3 text-left">Description</th>
                                 <th class="px-6 py-3 text-left">Genre</th>
-                                <th class="px-6 py-3 text-left">Prix</th>
+                                <th class="px-6 py-3 text-left">added_at</th>
+                                <th class="px-6 py-3 text-left">release_date</th>
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                            $games = [
-                                ['id' => 1, 'title' => 'Example Game 1', 'genre' => 'Action', 'price' => 59.99],
-                                ['id' => 2, 'title' => 'Example Game 2', 'genre' => 'RPG', 'price' => 49.99],
-                            ];
+                            $games = new Game();
+                            $games_list = $games->showGames();
 
-                            foreach ($games as $game): ?>
+                            foreach ($games_list as $game): ?>
                             <tr class="hover:bg-gray-700">
                                 <td class="px-6 py-4">
-                                    <img src="placeholder.jpg" alt="<?= htmlspecialchars($game['title']) ?>" class="w-16 h-16 object-cover rounded">
+                                    <img src="<?= htmlspecialchars($game['game_img']) ?>" 
+                                         alt="<?= htmlspecialchars($game['game_title']) ?>" 
+                                         class="w-16 h-16 object-cover rounded">
                                 </td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($game['title']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['game_title']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['game_description']) ?></td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($game['genre']) ?></td>
-                                <td class="px-6 py-4"><?= number_format($game['price'], 2) ?>€</td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['added_at']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['release_date']) ?></td>
+     
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300">
+                                        <a href="edit.php?id=<?= htmlspecialchars($game['game_id']) ?>" 
+                                           class="text-blue-400 hover:text-blue-300">
                                             <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="text-red-400 hover:text-red-300">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
+                                        </a>
+                                        <form method="POST" style="display: inline;" 
+                                              onsubmit="return confirm('do you want to delete this game ?  ');">
+                                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </td>
                             </tr>
