@@ -35,7 +35,7 @@ class Database {
 
     public function select($sql, $params = []) {
         $stmt = $this->query($sql, $params);
-        return $stmt->fetchAll();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function insert($sql, $params = []) {
