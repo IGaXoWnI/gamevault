@@ -80,5 +80,40 @@ class Game {
         }
     }
     
+    public function updateGame($gameId, $title, $description, $genre, $releaseDate, $avatar) {
+        try {
+            $sql = "UPDATE games SET 
+                    game_title = :title, 
+                    game_description = :description, 
+                    genre = :genre, 
+                    release_date = :release_date,
+                    game_img = :avatar
+                    WHERE game_id = :game_id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':title' => $title,
+                ':description' => $description,
+                ':genre' => $genre,
+                ':release_date' => $releaseDate,
+                ':avatar' => $avatar,
+                ':game_id' => $gameId
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    public function getGameById($gameId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM games WHERE game_id = ?");
+            $stmt->execute([$gameId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
 }
 ?>
