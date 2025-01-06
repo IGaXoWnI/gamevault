@@ -13,7 +13,7 @@ $userid = $_SESSION['user_id'];
  if($_SERVER['REQUEST_METHOD'] == 'POST'){
     echo" dwda";
     try{ $library= new library();
-echo $library->addToLibray($_POST['game_id'],$userid );}
+echo $library->addToLibrary($_POST['game_id'],$userid );}
 catch (Exception $e) {
     echo "Error: " . $e->getMessage();
 }

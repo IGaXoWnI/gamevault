@@ -1,6 +1,0 @@
-<?php
-
-echo" hello meriem";
-
-
-?>

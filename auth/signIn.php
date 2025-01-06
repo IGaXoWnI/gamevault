@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     try {
         $user = new User($pdo);
-        $result = $user->login($email, $password);
+        $result = $user->login($email, $password,$role);
 
         if($result["success"]){
             if($result["user"]["role"] === "admin"){
