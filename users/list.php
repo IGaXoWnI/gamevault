@@ -1,10 +1,30 @@
 <?php
-include '../classes/admin.php';
+require_once '../classes/database.php';
+require_once '../classes/user.php'; 
 session_start();
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
     exit();
+}
+
+if (isset($_POST['delete']) && isset($_POST['user_id'])) {
+    try {
+        $user = new User();
+        $result = $user->deleteUser($_POST['user_id']);
+        
+        if ($result) {
+            header('Location: list.php');
+        } else {
+            $_SESSION['error'] = "Failed to delete the user";
+            header('Location: list.php');
+        }
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "An error occurred while deleting the user";
+                header('Location: list.php');
+        exit();
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -43,42 +63,39 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 <th class="px-6 py-3 text-left">Utilisateur</th>
                                 <th class="px-6 py-3 text-left">Email</th>
                                 <th class="px-6 py-3 text-left">Rôle</th>
-                               
+                                <th class="px-6 py-3 text-left">Statut</th>
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                            $user=new admin();
-                            $users=$user-> showusers();
+                            $userObj = new User();
+                            $users = $userObj->loadUsers();
 
                             foreach ($users as $user): ?>
                             <tr class="hover:bg-gray-700">
-                                <td class="px-6 py-4 flex items-center space-x-3">
-                                    <img src="https://api.dicebear.com/6.x/initials/svg?seed=<?= htmlspecialchars($user['username']) ?>" 
-                                         class="w-8 h-8 rounded-full">
+                                <td class="px-6 py-4 ">
                                     <span><?= htmlspecialchars($user['username']) ?></span>
                                 </td>
                                 <td class="px-6 py-4"><?= htmlspecialchars($user['user_email']) ?></td>
                                 <td class="px-6 py-4">
-          <span class="px-2 py-1 rounded-full text-xs <?= $user['role'] === 'Admin' ? 'bg-blue-500' : 'bg-gray-600'  ?>">
-                       <?= htmlspecialchars($user['role']) ?>
-                          </span>
-                   </td>
-
-                               
+                                    <span class="px-2 py-1 rounded-full text-xs <?= strtolower($user['role']) === 'admin' ? 'bg-blue-500' : 'bg-gray-600' ?>">
+                                        <?= htmlspecialchars($user['role']) ?>
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="text-yellow-400 hover:text-yellow-300">
-                                            <i class="fas fa-key"></i>
-                                        </button>
-                                        <button class="text-red-400 hover:text-red-300">
-                                            <i class="fas fa-ban"></i>
-                                        </button>
-                                    </div>
+                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['is_banned'] ? 'bg-red-500' : 'bg-green-500' ?>">
+                                        <?= $user['is_banned'] ? 'Banni' : 'Actif' ?>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 ">
+                                <form method="POST" style="display: inline;" 
+                                              onsubmit="return confirm('do you want to delete this user ?  ');">
+                                            <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
+                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
                                 </td>
                             </tr>
                             <?php endforeach; ?>

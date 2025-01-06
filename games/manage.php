@@ -1,5 +1,25 @@
 <?php
-include '../classes/game.php';
+session_start();
+require_once '../classes/game.php';
+
+if (isset($_POST['delete']) && isset($_POST['game_id'])) {
+    try {
+        $game = new Game();
+        $result = $game->deleteGame($_POST['game_id']);
+        
+        if ($result) {
+            header('Location: manage.php');
+        } else {
+            $_SESSION['error'] = "Failed to delete the game";
+            header('Location: manage.php');
+        }
+        exit();
+    } catch (Exception $e) {
+        $_SESSION['error'] = "An error occurred while deleting the game";
+        header('Location: manage.php');
+        exit();
+    }
+}
 
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -39,50 +59,48 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                             <tr>
                                 <th class="px-6 py-3 text-left">Image</th>
                                 <th class="px-6 py-3 text-left">Titre</th>
+                                <th class="px-6 py-3 text-left">Description</th>
                                 <th class="px-6 py-3 text-left">Genre</th>
-                                <th class="px-6 py-3 text-left">description</th>
-                                <th class="px-6 py-3 text-left">date de sortie </th>
-                                <th class="px-6 py-3 text-left">added at  </th>
+                                <th class="px-6 py-3 text-left">added_at</th>
+                                <th class="px-6 py-3 text-left">release_date</th>
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                          $game=new Game();
-                          $games=$game->showgames();
-                      
-                            foreach ($games as $game): ?>
-                            <?php   $game_id=$_SESSION['game_id']=$game['game_id'];
-                            ?>
-                                <tr class="hover:bg-gray-700">
-                                    <td class="px-6 py-4">
-                                        <img src="placeholder.jpg" alt="<?= htmlspecialchars($game['game_img']) ?>" class="w-16 h-16 object-cover rounded">
-                                    </td>
-                                    <td class="px-6 py-4"><?= htmlspecialchars($game['game_title']) ?></td>
-                                    <td class="px-6 py-4"><?= htmlspecialchars($game['genre']) ?></td>
-                                    <td class="px-6 py-4"><?= htmlspecialchars($game['game_description'])?></td>
-                                    <td class="px-6 py-4"><?= htmlspecialchars($game['release_date'] )?></td>
-                                    <td class="px-6 py-4"><?= htmlspecialchars($game['added_at'] )?></td>
-                                    <td class="px-6 py-4">
-                                        <div class="flex space-x-3">
-                                        <button class="text-blue-400 hover:text-blue-300">
-                                        <a href="../games/update.php?update=<?php echo $game_id ?>"><i class="fas fa-edit"></i></a>
- 
+                            $games = new Game();
+                            $games_list = $games->showGames();
 
-</button>
-
-                                            <button class="text-red-400 hover:text-red-300">
-                                               <a href="../games/delette.php?deleted=<?php echo $game_id ?>"><i class="fas fa-trash"></i></a>  
+                            foreach ($games_list as $game): ?>
+                            <tr class="hover:bg-gray-700">
+                                <td class="px-6 py-4">
+                                    <img src="<?= htmlspecialchars($game['game_img']) ?>" 
+                                         alt="<?= htmlspecialchars($game['game_title']) ?>" 
+                                         class="w-16 h-16 object-cover rounded">
+                                </td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['game_title']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['game_description']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['genre']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['added_at']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($game['release_date']) ?></td>
+     
+                                <td class="px-6 py-4">
+                                    <div class="flex space-x-3">
+                                        <a href="edit.php?id=<?= htmlspecialchars($game['game_id']) ?>" 
+                                           class="text-blue-400 hover:text-blue-300">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <form method="POST" style="display: inline;" 
+                                              onsubmit="return confirm('do you want to delete this game ?  ');">
+                                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
                                             </button>
-                                          
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach;
-                     
-                       
-                        
-                          ?>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>

@@ -104,13 +104,11 @@ class User {
         }
     }
 
-    // Update user profile
     public function updateProfile($userId, $data) {
         try {
             $updates = [];
             $params = [];
 
-            // Build dynamic update query based on provided data
             if (isset($data['username'])) {
                 $updates[] = "username = ?";
                 $params[] = $data['username'];
@@ -128,7 +126,6 @@ class User {
                 return ['success' => false, 'message' => 'No data to update'];
             }
 
-            // Add user_id to params
             $params[] = $userId;
 
             $affected = $this->db->update(
@@ -147,10 +144,8 @@ class User {
         }
     }
 
-    // Ban/Unban user
     public function banUser($userId, $ban = true) {
         try {
-            // Check if user has admin role
             if ($_SESSION['role'] !== 'admin') {
                 return ['success' => false, 'message' => 'Unauthorized action'];
             }
@@ -171,7 +166,6 @@ class User {
         }
     }
 
-    // Load user by ID
     public function loadUser($userId) {
         try {
             $user = $this->db->select(
@@ -196,5 +190,39 @@ class User {
             return false;
         }
     }
+
+    public function loadUsers() {
+        try {
+            $users = $this->db->select("SELECT * FROM users", [], PDO::FETCH_ASSOC);
+            
+            if ($users === false) {
+                error_log("Failed to load users from database");
+                return [];
+            }
+            
+            return $users;
+        } catch (Exception $e) {
+            error_log("Error loading users: " . $e->getMessage());
+            return [];
+        }
+    }
+
+
+    public function deleteUser($userId) {
+        try {
+            return $this->db->delete(
+                "DELETE FROM users WHERE user_id = ?",
+                [$userId]
+            );
+        } catch (Exception $e) {
+            error_log("Error deleting user: " . $e->getMessage());
+            return false;
+        }
+    }   
+
+    
 }
+
+
+
 ?>

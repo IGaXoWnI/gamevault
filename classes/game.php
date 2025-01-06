@@ -1,7 +1,6 @@
 <?php
 require_once 'database.php';
 
-
 session_start() ;
 
 class Game {
@@ -61,27 +60,60 @@ class Game {
 
        
     }
-    //  showgames dan dasho or accueil
-     public function showgames(){
-        $games = $this->pdo->prepare("SELECT * FROM games");
-        $games->execute();
-          return  $showgame = $games->fetchAll(PDO::FETCH_ASSOC);
-       
+
+
+    public function showGames() {
+        $games = "SELECT * FROM games";
+        $games_list = $this->pdo->prepare($games);
+        $games_list->execute();
+        return $games_list->fetchAll();
+    }
+
+
+    public function deleteGame($game_id) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM games WHERE game_id = ?");
+            return $stmt->execute([$game_id]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+    
+    public function updateGame($gameId, $title, $description, $genre, $releaseDate, $avatar) {
+        try {
+            $sql = "UPDATE games SET 
+                    game_title = :title, 
+                    game_description = :description, 
+                    genre = :genre, 
+                    release_date = :release_date,
+                    game_img = :avatar
+                    WHERE game_id = :game_id";
+            
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                ':title' => $title,
+                ':description' => $description,
+                ':genre' => $genre,
+                ':release_date' => $releaseDate,
+                ':avatar' => $avatar,
+                ':game_id' => $gameId
+            ]);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    public function getGameById($gameId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM games WHERE game_id = ?");
+            $stmt->execute([$gameId]);
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
 }
-public function removegames(){
-    $removeid=$_SESSION['game_id'];
-    $remove="DELETE FROM  games WHERE game_id= $removeid";
-    $removegames=$this->pdo->prepare($remove);
-    return  $removegames->execute();
-}
-
-
-
-}
-
 ?>
-  <?php
-                          
-
-                            
-                            
