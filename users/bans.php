@@ -1,9 +1,14 @@
 <?php
+include '../classes/admin.php';
 session_start();
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
     exit();
+}
+if(isset($_POST['ban'])){
+    $admin=new admin();
+    echo $admin->banutilisateur($_POST['status'],$_POST['user_id']);
 }
 ?>
 <!DOCTYPE html>
@@ -40,11 +45,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                            $users = [
-                                ['username' => 'user1', 'email' => 'user1@example.com', 'status' => 'active'],
-                                ['username' => 'user2', 'email' => 'user2@example.com', 'status' => 'banned'],
-                            ];
-
+                           
+                            $user=new admin();
+                            $users=$user-> showusers();
                             foreach ($users as $user): ?>
                             <tr class="hover:bg-gray-700">
                                 <td class="px-6 py-4 flex items-center space-x-3">
@@ -52,20 +55,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                          class="w-8 h-8 rounded-full">
                                     <span><?= htmlspecialchars($user['username']) ?></span>
                                 </td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($user['email']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($user['user_email']) ?></td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['status'] === 'active' ? 'bg-green-500' : 'bg-red-500' ?>">
+                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['status'] === 'actif' ? 'bg-green-500' : 'bg-red-500' ?>">
                                         <?= htmlspecialchars($user['status']) ?>
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <form action="update_ban_status.php" method="POST" class="flex items-center space-x-2">
-                                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['username']) ?>">
+                                    <form action="../users/bans.php" method="POST" class="flex items-center space-x-2">
+                                        <input type="hidden" name="user_id" value="<?= htmlspecialchars($user['user_id']) ?>">
                                         <select name="status" class="bg-gray-700 rounded px-3 py-1 text-sm">
-                                            <option value="active" <?= $user['status'] === 'active' ? 'selected' : '' ?>>Actif</option>
-                                            <option value="banned" <?= $user['status'] === 'banned' ? 'selected' : '' ?>>Banni</option>
+                                            <option value="actif" <?= $user['status'] === 'actif' ? 'selected' : '' ?>>Actif</option>
+                                            <option value="banni" <?= $user['status'] === 'banni' ? 'selected' : '' ?>>Banni</option>
                                         </select>
-                                        <button type="submit" class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-sm">
+                                        <button type="submit"  name="ban"class="bg-blue-500 hover:bg-blue-600 px-3 py-1 rounded text-sm">
                                             Modifier
                                         </button>
                                     </form>

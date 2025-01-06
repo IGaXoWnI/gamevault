@@ -1,4 +1,5 @@
 <?php
+include '../classes/admin.php';
 session_start();
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -42,16 +43,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 <th class="px-6 py-3 text-left">Utilisateur</th>
                                 <th class="px-6 py-3 text-left">Email</th>
                                 <th class="px-6 py-3 text-left">Rôle</th>
-                                <th class="px-6 py-3 text-left">Statut</th>
+                               
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                            $users = [
-                                ['username' => 'user1', 'email' => 'user1@example.com', 'role' => 'Utilisateur', 'status' => 'Actif'],
-                                ['username' => 'admin1', 'email' => 'admin1@example.com', 'role' => 'Admin', 'status' => 'Actif'],
-                            ];
+                            $user=new admin();
+                            $users=$user-> showusers();
 
                             foreach ($users as $user): ?>
                             <tr class="hover:bg-gray-700">
@@ -60,17 +59,14 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                          class="w-8 h-8 rounded-full">
                                     <span><?= htmlspecialchars($user['username']) ?></span>
                                 </td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($user['email']) ?></td>
+                                <td class="px-6 py-4"><?= htmlspecialchars($user['user_email']) ?></td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['role'] === 'Admin' ? 'bg-blue-500' : 'bg-gray-600' ?>">
-                                        <?= htmlspecialchars($user['role']) ?>
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['status'] === 'Actif' ? 'bg-green-500' : 'bg-red-500' ?>">
-                                        <?= htmlspecialchars($user['status']) ?>
-                                    </span>
-                                </td>
+          <span class="px-2 py-1 rounded-full text-xs <?= $user['role'] === 'Admin' ? 'bg-blue-500' : 'bg-gray-600'  ?>">
+                       <?= htmlspecialchars($user['role']) ?>
+                          </span>
+                   </td>
+
+                               
                                 <td class="px-6 py-4">
                                     <div class="flex space-x-3">
                                         <button class="text-blue-400 hover:text-blue-300">

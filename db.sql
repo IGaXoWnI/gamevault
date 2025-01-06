@@ -6,7 +6,9 @@ create table users(
     username varchar(100) not null unique ,
     user_email varchar(150) not null unique ,
     user_password varchar(100) not null ,
-    role varchar(25) not null 
+    role varchar(25) not null ,
+
+ status ENUM('actif', 'banni') DEFAULT 'actif'
 );
 
 
@@ -19,7 +21,7 @@ create table games(
     genre varchar(50) not null ,
     added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
     release_date date not null ,
-    user_id bigint references users(user_id) 
+    user_id bigint references users(user_id)
 
 );
 

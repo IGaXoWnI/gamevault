@@ -1,6 +1,7 @@
 <?php
 require_once 'database.php';
 
+
 session_start() ;
 
 class Game {
@@ -60,5 +61,27 @@ class Game {
 
        
     }
+    //  showgames dan dasho or accueil
+     public function showgames(){
+        $games = $this->pdo->prepare("SELECT * FROM games");
+        $games->execute();
+          return  $showgame = $games->fetchAll(PDO::FETCH_ASSOC);
+       
 }
+public function removegames(){
+    $removeid=$_SESSION['game_id'];
+    $remove="DELETE FROM  games WHERE game_id= $removeid";
+    $removegames=$this->pdo->prepare($remove);
+    return  $removegames->execute();
+}
+
+
+
+}
+
 ?>
+  <?php
+                          
+
+                            
+                            

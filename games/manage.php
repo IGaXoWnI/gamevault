@@ -1,5 +1,6 @@
 <?php
-session_start();
+include '../classes/game.php';
+
 $username = $_SESSION['username'] ?? '';
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
@@ -39,37 +40,49 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 <th class="px-6 py-3 text-left">Image</th>
                                 <th class="px-6 py-3 text-left">Titre</th>
                                 <th class="px-6 py-3 text-left">Genre</th>
-                                <th class="px-6 py-3 text-left">Prix</th>
+                                <th class="px-6 py-3 text-left">description</th>
+                                <th class="px-6 py-3 text-left">date de sortie </th>
+                                <th class="px-6 py-3 text-left">added at  </th>
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
                             <?php
-                            $games = [
-                                ['id' => 1, 'title' => 'Example Game 1', 'genre' => 'Action', 'price' => 59.99],
-                                ['id' => 2, 'title' => 'Example Game 2', 'genre' => 'RPG', 'price' => 49.99],
-                            ];
-
+                          $game=new Game();
+                          $games=$game->showgames();
+                      
                             foreach ($games as $game): ?>
-                            <tr class="hover:bg-gray-700">
-                                <td class="px-6 py-4">
-                                    <img src="placeholder.jpg" alt="<?= htmlspecialchars($game['title']) ?>" class="w-16 h-16 object-cover rounded">
-                                </td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($game['title']) ?></td>
-                                <td class="px-6 py-4"><?= htmlspecialchars($game['genre']) ?></td>
-                                <td class="px-6 py-4"><?= number_format($game['price'], 2) ?>€</td>
-                                <td class="px-6 py-4">
-                                    <div class="flex space-x-3">
+                            <?php   $game_id=$_SESSION['game_id']=$game['game_id'];
+                            ?>
+                                <tr class="hover:bg-gray-700">
+                                    <td class="px-6 py-4">
+                                        <img src="placeholder.jpg" alt="<?= htmlspecialchars($game['game_img']) ?>" class="w-16 h-16 object-cover rounded">
+                                    </td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($game['game_title']) ?></td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($game['genre']) ?></td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($game['game_description'])?></td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($game['release_date'] )?></td>
+                                    <td class="px-6 py-4"><?= htmlspecialchars($game['added_at'] )?></td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex space-x-3">
                                         <button class="text-blue-400 hover:text-blue-300">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="text-red-400 hover:text-red-300">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
+                                        <a href="../games/update.php?update=<?php echo $game_id ?>"><i class="fas fa-edit"></i></a>
+ 
+
+</button>
+
+                                            <button class="text-red-400 hover:text-red-300">
+                                               <a href="../games/delette.php?deleted=<?php echo $game_id ?>"><i class="fas fa-trash"></i></a>  
+                                            </button>
+                                          
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach;
+                     
+                       
+                        
+                          ?>
                         </tbody>
                     </table>
                 </div>
