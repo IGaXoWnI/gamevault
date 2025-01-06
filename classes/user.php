@@ -1,4 +1,5 @@
 <?php
+require_once 'database.php';
 class User {
     private $id;
     private $email;
@@ -6,10 +7,12 @@ class User {
     private $password;
     private $role;
     private $isBanned;
-    private $db;
+    protected $db;
 
     public function __construct() {
         $this->db = new Database();
+        $this->db-> getConnection() ;
+
     }
 
     public function getId() { return $this->id; }
