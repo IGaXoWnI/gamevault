@@ -63,7 +63,7 @@ if (isset($_POST['delete']) && isset($_POST['user_id'])) {
                                 <th class="px-6 py-3 text-left">Utilisateur</th>
                                 <th class="px-6 py-3 text-left">Email</th>
                                 <th class="px-6 py-3 text-left">Rôle</th>
-                                <th class="px-6 py-3 text-left">Statut</th>
+                               
                                 <th class="px-6 py-3 text-left">Actions</th>
                             </tr>
                         </thead>
@@ -83,11 +83,9 @@ if (isset($_POST['delete']) && isset($_POST['user_id'])) {
                                         <?= htmlspecialchars($user['role']) ?>
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 rounded-full text-xs <?= $user['is_banned'] ? 'bg-red-500' : 'bg-green-500' ?>">
-                                        <?= $user['is_banned'] ? 'Banni' : 'Actif' ?>
-                                    </span>
-                                </td>
+                               
+                               
+
                                 <td class="px-6 py-4 ">
                                 <form method="POST" style="display: inline;" 
                                               onsubmit="return confirm('do you want to delete this user ?  ');">

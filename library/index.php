@@ -1,10 +1,39 @@
 <?php
-session_start();
+
+require '../classes/game.php';
+require '../classes/collection.php';
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
 }
+
 $username = $_SESSION['username'];
+$userid = $_SESSION['user_id'];
+
+ if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    echo" dwda";
+    try{ $library= new library();
+echo $library->addToLibray($_POST['game_id'],$userid );}
+catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+
+}
+else{ echo"  not work ";};
+  
+  
+
+
+ 
+
+
+var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
+
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -113,24 +142,16 @@ $username = $_SESSION['username'];
 
         <div class="game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8 rounded-3xl">
             <?php
-            $games = [
-                [
-                    'id' => 1,
-                    'title' => 'The Witcher 3',
-                    'image' => 'https://i1.sndcdn.com/artworks-Mnckgkyr334C1360-ZmjZQg-t500x500.jpg',
-                    'status' => 'playing',
-                    'playtime' => '45h',
-                    'rating' => 5
-                ],
-            ];
+            $game= new Game();
+            $games=$game->showGames() ;
 
             foreach ($games as $game): ?>
             <div class="game-card group relative bg-gradient-to-br from-white/[0.075] to-white/[0.035] 
                         rounded-2xl overflow-hidden border border-white/10 transition-all duration-300
                         hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/10">
                 <div class="aspect-[4/3] overflow-hidden">
-                    <img src="<?= htmlspecialchars($game['image']) ?>" 
-                         alt="<?= htmlspecialchars($game['title']) ?>"
+                    <img src="<?= htmlspecialchars($game['game_img']) ?>" 
+                         alt="<?= htmlspecialchars($game['game_title']) ?>"
                          class="w-full h-full object-cover transform transition duration-500 
                                 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
@@ -141,40 +162,48 @@ $username = $_SESSION['username'];
                         </button>
                     </div>
                 </div>
-                <div class="relative p-6">
-                    <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['title']) ?></h3>
+                <div class="relative p-6" style="z-index:200;">
+                    <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
                     <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
-                        <span class="flex items-center space-x-2">
+                        <span class="flex items-center space-x-2"> 
                             <i class="fas fa-clock"></i>
-                            <span><?= htmlspecialchars($game['playtime']) ?></span>
-                        </span>
-                        <div class="flex items-center">
-                            <?php for($i = 1; $i <= 5; $i++): ?>
-                                <i class="fas fa-star text-xs <?= $i <= $game['rating'] ? 'text-yellow-400' : 'text-gray-600' ?>"></i>
-                            <?php endfor; ?>
-                        </div>
+            </span>
+                            <div class="flex items-center justify-between">
+                       
+                       <div class="flex space-x-1">
+                       <form  action= "" method="POST" >
+                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                           <button type="submit" name="add" class="text-red-400 hover:text-red-300">
+                                               <i class="fas fa-plus"></i >
+                                           </button>
+                        </form>       
+                        
                     </div>
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-xl text-sm font-medium
-                            <?= $game['status'] === 'playing' ? 'bg-blue-500/20 text-blue-400 border border-blue-500/20' : 
-                                ($game['status'] === 'completed' ? 'bg-green-500/20 text-green-400 border border-green-500/20' : 
-                                 'bg-red-500/20 text-red-400 border border-red-500/20') ?>">
-                            <?= ucfirst($game['status']) ?>
-                        </span>
-                        <div class="flex space-x-1">
-                            <button class="p-2 hover:text-violet-400 transition-colors duration-300">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="p-2 hover:text-red-400 transition-colors duration-300">
-                                <i class="fas fa-trash"></i>
-                            </button>
+                    
+                                        
+                                      
                         </div>
+                     
+                        
                     </div>
+                    
                 </div>
+                 
+                
             </div>
+          
+                                        
+            
+    
             <?php endforeach; ?>
         </div>
     </main>
+    
+  
+
+
+
+   
 
     <script>
     document.addEventListener('DOMContentLoaded', () => {
