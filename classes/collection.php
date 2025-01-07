@@ -72,8 +72,17 @@ JOIN games ON games.game_id = library.game_id
 
 
 }
-
-}
+//  deletee  par library 
+public function removeFromLibrary($gameid){
+    try{
+ $game="DELETE FROM library WHERE game_id=:game_id";
+ $deletegames=$this->pdo->prepare($game);
+ return $deletegames->execute(['game_id'=>$gameid]);
+    }
+    catch (Exception $e) {
+        echo("Error : " . $e->getMessage());
+       
+    } }}
 
 
  

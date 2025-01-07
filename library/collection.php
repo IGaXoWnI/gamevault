@@ -14,6 +14,40 @@ $userid=$_SESSION['user_id'];
 echo$userid ;
 
 
+
+
+
+// if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
+//     $gameid=$_POST['game_id'];
+// try{
+//   $library= new library();
+//   echo  $removelibrary=$library->removeFromLibrary($gameid);
+// }
+// catch (Exception $e) {
+//     echo "Error: " . $e->getMessage();
+// }
+// }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+   
+    if (isset($_POST['game_id'])) {
+        $gameid = $_POST['game_id'];
+
+        try {
+           
+            $library = new Library(); 
+            $removelibrary = $library->removeFromLibrary($gameid);
+            
+           
+            echo "Game  removedd";
+        } catch (Exception $e) {
+           
+            echo "Error: " . $e->getMessage();
+        }
+    } 
+}
+
+
+
 ?>
 
 
@@ -153,12 +187,13 @@ echo$userid ;
                             <div class="flex items-center justify-between">
                        
                        <div class="flex space-x-1">
-                       <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button type="submit" name="add" class="text-red-400 hover:text-red-300">
-                                               <i class="fas fa-plus"></i >
-                                           </button>
-                        </form>       
+                       <form method="POST" style="display: inline;" 
+                                              onsubmit="return confirm('do you want to delete this game ?  ');">
+                                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>     
                         
                     </div>
                     
