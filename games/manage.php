@@ -1,5 +1,5 @@
 <?php
-session_start();
+
 require_once '../classes/game.php';
 
 if (isset($_POST['delete']) && isset($_POST['game_id'])) {

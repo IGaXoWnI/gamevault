@@ -1,6 +1,6 @@
 <?php
 
-require_once '../classes/User.php';  
+require_once '../classes/user.php';  
 require_once '../classes/Database.php';  
 $pdo = new Database();
 

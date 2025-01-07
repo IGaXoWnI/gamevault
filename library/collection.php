@@ -1,3 +1,5 @@
+
+
 <?php
 
 require '../classes/game.php';
@@ -8,33 +10,46 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
-$userid = $_SESSION['user_id'];
+$userid=$_SESSION['user_id'];
+echo$userid ;
 
- if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    echo" dwda";
-    try{ $library= new library();
-print_r($library->addToLibrary($_POST['game_id'],$userid )) ;}
-catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+
+
+
+
+// if($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])){
+//     $gameid=$_POST['game_id'];
+// try{
+//   $library= new library();
+//   echo  $removelibrary=$library->removeFromLibrary($gameid);
+// }
+// catch (Exception $e) {
+//     echo "Error: " . $e->getMessage();
+// }
+// }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+   
+    if (isset($_POST['game_id'])) {
+        $gameid = $_POST['game_id'];
+
+        try {
+           
+            $library = new Library(); 
+            $removelibrary = $library->removeFromLibrary($gameid);
+            
+           
+            echo "Game  removedd";
+        } catch (Exception $e) {
+           
+            echo "Error: " . $e->getMessage();
+        }
+    } 
 }
-
-
-}
-else{ echo"  not work ";};
-  
-  
-
-
- 
-
-
-var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
-
-
 
 
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -76,7 +91,7 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
     <?php include '../components/user_navbar.php'; ?>
     
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="relative overflow-hidden rounded-3xl mb-12 bg-gradient-to-br from-violet-900/20 to-indigo-900/20 border border-white/5">
+        <!-- <div class="relative overflow-hidden rounded-3xl mb-12 bg-gradient-to-br from-violet-900/20 to-indigo-900/20 border border-white/5">
             <div class="absolute inset-0 bg-[url('/assets/grid.svg')] opacity-10"></div>
             <div class="relative p-8 md:p-12">
                 <div class="flex flex-col md:flex-row items-center justify-between gap-8">
@@ -103,24 +118,24 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
                                 <div class="text-sm text-gray-400">Terminés</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="floating">
+                    </div> -->
+                    <!-- <div class="floating">
                         <img src="https://image.api.playstation.com/vulcan/ap/rnd/202306/1219/60eca3ac155247e21850c7d075d01ebf0f3f5dbf19ccd2a1.jpg" 
                              alt="Spider-Man 2" 
                              class="w-64 h-64 object-contain rounded-xl">
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
 
         <!-- Actions Bar -->
         <div class="flex flex-col md:flex-row gap-6 items-center mb-12">
-            <button class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 rounded-2xl
+            <!-- <button class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 rounded-2xl
                          hover:from-violet-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105
                          flex items-center space-x-3 shadow-lg shadow-violet-600/20">
                 <i class="fas fa-plus"></i>
                 <span>Ajouter un jeu</span>
-            </button>
+            </button> -->
             <div class="flex-1 flex flex-wrap gap-4">
                 <div class="relative flex-1 min-w-[240px]">
                     <input type="text" 
@@ -142,8 +157,11 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
 
         <div class="game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-8 rounded-3xl">
             <?php
-            $game= new Game();
-            $games=$game->showGames() ;
+            $game= new library();
+            $games=$game->showInlibrary();
+          
+          
+           
 
             foreach ($games as $game): ?>
             <div class="game-card group relative bg-gradient-to-br from-white/[0.075] to-white/[0.035] 
@@ -169,12 +187,13 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
                             <div class="flex items-center justify-between">
                        
                        <div class="flex space-x-1">
-                       <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button type="submit" name="add" class="text-red-400 hover:text-red-300">
-                                               <i class="fas fa-plus"></i >
-                                           </button>
-                        </form>       
+                       <form method="POST" style="display: inline;" 
+                                              onsubmit="return confirm('do you want to delete this game ?  ');">
+                                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>     
                         
                     </div>
                     
