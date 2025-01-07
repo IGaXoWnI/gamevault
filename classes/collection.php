@@ -13,23 +13,8 @@ require_once 'database.php';
         $this->pdo = (new Database())->getConnection();
     }
 
-//  function addToLibray($game_id,$user_id){
-//    $stmt=$this->pdo->query(" SELECT * FROM library ");
-//    $results = $stmt->fetchAll();
-// if (count($results) > 0) {
-//     echo "Des résultats ont été trouvés.";
-// } else {
-//     echo "Aucun résultat trouvé."; $games="INSERT INTO library (game_id,user_id) VALUES (:game_id,:user_id)";
-//     $addToLibrary=$this->pdo->prepare($games);
-//      return $addToLibrary->execute(
-// [':game_id'=>$game_id,
-// ':user_id'=>$user_id
 
-// ]
-//     );
 
-//  }
-// }
 
 public function addToLibrary($game_id, $user_id) {
   
@@ -44,16 +29,51 @@ public function addToLibrary($game_id, $user_id) {
       
        $games = "INSERT INTO library (game_id, user_id) VALUES (:game_id, :user_id)";
        $addToLibrary = $this->pdo->prepare($games);
-       return $result = $addToLibrary->execute([
+
+        $result = $addToLibrary->execute([
            ':game_id' => $game_id,
            ':user_id' => $user_id
        ]);
+       if ($result) {
+       
+        return $addToLibrary->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        
+        echo "Erreur d'exécution de la requête SQL.";
+        return [];
+    }
+      
+
 
       
-   }
+   }}
+
+
+public function showInlibrary(){
+  
+    $userid=$_SESSION['user_id'];
+    $game = "SELECT games.game_img, games.game_title, games.genre,games.game_description,games.release_date,games.added_at, users.user_id,games.game_id FROM library 
+JOIN games ON games.game_id = library.game_id  
+    JOIN users ON users.user_id = library.user_id 
+    WHERE users.user_id = :user_id";
+     $showgames=$this->pdo->prepare($game);
+     
+    $result=$showgames->execute([':user_id'=>$userid]);
+    if ($result) {
+       
+        return $showgames->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        
+        echo "Erreur d'exécution de la requête SQL.";
+        return [];
+    }
+   
+
+
+
 }
 
-    }
+}
 
 
  

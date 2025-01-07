@@ -11,10 +11,15 @@
             </div>
 
             <!-- Navigation principale -->
+        
             <div class="hidden md:flex items-center space-x-8">
-                <a href="../library/index.php" class="text-gray-300 hover:text-white transition">
+            <a href="../library/index.php" class="text-gray-300 hover:text-white transition">
+             <i class="fas fa-home mr-2"></i>home
+              </a>
+                <a href="../library/collection.php" class="text-gray-300 hover:text-white transition">
                     <i class="fas fa-gamepad mr-2"></i>Bibliothèque
                 </a>
+
                 <a href="../library/favorites.php" class="text-gray-300 hover:text-white transition">
                     <i class="fas fa-star mr-2"></i>Favoris
                 </a>
