@@ -23,12 +23,6 @@
                 <a href="../library/favorises.php" class="text-gray-300 hover:text-white transition">
                     <i class="fas fa-star mr-2"></i>Favoris
                 </a>
-                <a href="../library/reviews.php" class="text-gray-300 hover:text-white transition">
-                    <i class="fas fa-comment mr-2"></i>Critiques
-                </a>
-                <a href="../chat/index.php" class="text-gray-300 hover:text-white transition">
-                    <i class="fas fa-comments mr-2"></i>Chat
-                </a>
             </div>
 
             <!-- Menu utilisateur -->

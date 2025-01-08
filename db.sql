@@ -33,15 +33,15 @@ CREATE TABLE favoris (
     FOREIGN KEY (game_id) REFERENCES games(game_id)          
 );
 
-CREATE TABLE reviews (
-    review_id INT AUTO_INCREMENT PRIMARY KEY,        
-    user_id INT NOT NULL,                     
-    game_id INT NOT NULL,                     
-             
-    review TEXT,                            
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ,
-    FOREIGN KEY (game_id) REFERENCES games(game_id) 
+CREATE TABLE game_reviews (
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    game_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT CHECK (rating >= 0 AND rating <= 5),
+    review TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (game_id) REFERENCES games(game_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 CREATE TABLE library (
     library_id INT AUTO_INCREMENT PRIMARY KEY,         
@@ -57,19 +57,6 @@ CREATE TABLE library (
 );
 
 
--- CREATE TABLE user_games (
---     id INT AUTO_INCREMENT PRIMARY KEY,         
---     user_id INT,                               
---     game_id INT,                               
---     status ENUM('en_cours', 'termine', 'abandonné') NOT NULL,  
-                
---     play_time INT,                            
---     is_favorite BOOLEAN,                       
---    added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
-   
---     FOREIGN KEY (user_id) REFERENCES users(user_id),  
---     FOREIGN KEY (game_id) REFERENCES games(game_id)    
--- );
 
 create TABLE chat_messages{
     chat_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -78,3 +65,7 @@ create TABLE chat_messages{
      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
        FOREIGN KEY (user_id) REFERENCES users(user_id)
 }
+
+
+
+

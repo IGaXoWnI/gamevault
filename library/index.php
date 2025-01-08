@@ -2,8 +2,6 @@
 
 require '../classes/game.php';
 require '../classes/collection.php';
-require '../classes/user.php';
-
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
@@ -13,7 +11,7 @@ $username = $_SESSION['username'];
 $userid = $_SESSION['user_id'];
 
  if($_SERVER['REQUEST_METHOD'] === 'POST'){
-   
+    
     try{ $library= new library();
 print_r($library->addToLibrary($_POST['game_id'],$userid )) ;}
 catch (Exception $e) {
@@ -22,27 +20,12 @@ catch (Exception $e) {
 
 
 }
-else{ echo"  not work ";};
-//  favoris pat
+
   
-  if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['favoris'])){
-    $gameid=$_POST['game_id'];
-   try{
-$game= new User();
-echo $game->favorisGame($gameid,$userid);
-
-
-   }
-   catch (Exception $e) {
-    error_log("Error  favoris : " . $e->getMessage());
-    return false;
-}
-  }
+  
 
 
  
-
-
 
 
 
@@ -128,7 +111,7 @@ echo $game->favorisGame($gameid,$userid);
             </div>
         </div>
 
-        <!-- Actions Bar -->
+
         <div class="flex flex-col md:flex-row gap-6 items-center mb-12">
             <button class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 rounded-2xl
                          hover:from-violet-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105
@@ -164,50 +147,46 @@ echo $game->favorisGame($gameid,$userid);
             <div class="game-card group relative bg-gradient-to-br from-white/[0.075] to-white/[0.035] 
                         rounded-2xl overflow-hidden border border-white/10 transition-all duration-300
                         hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/10">
-                <div class="aspect-[4/3] overflow-hidden">
-                    <img src="<?= htmlspecialchars($game['game_img']) ?>" 
-                         alt="<?= htmlspecialchars($game['game_title']) ?>"
-                         class="w-full h-full object-cover transform transition duration-500 
-                                group-hover:scale-110">
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200;">
-                    <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
-                                     hover:bg-violet-500/50 transition duration-300 group" name="favoris" id="icon">
-                            <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
-                        </button>
-                        </form>   
-
-                       
-                    </div>
-                </div>
-                <div class="relative p-6" style="z-index:200;">
-                    <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
-                    <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
-                   
-                            <div class="flex items-center justify-between">
-                       
-                       <div class="flex space-x-1">
-                       <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button type="submit" name="add" class="text-red-400 hover:text-red-300">
-                                               <i class="fas fa-plus"></i >
-                                           </button>
-                        </form>       
-                        
-                    </div>
-                    
-                                        
-                                      
+                <a href="game_details.php?id=<?= htmlspecialchars($game['game_id']) ?>" class="block">
+                    <div class="aspect-[4/3] overflow-hidden">
+                        <img src="<?= htmlspecialchars($game['game_img']) ?>" 
+                             alt="<?= htmlspecialchars($game['game_title']) ?>"
+                             class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <div class="absolute top-4 right-4 flex space-x-2">
+                            <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
+                                         hover:bg-violet-500/50 transition duration-300 group">
+                                <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
+                            </button>
                         </div>
-                     
-                        
                     </div>
-                    
+                    <div class="relative p-6" style="z-index:200;">
+                        <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
+                        
+                        <div class="mb-3">
+                            <span class="px-3 py-1 bg-violet-500/20 rounded-full text-violet-300 text-sm">
+                                <?= htmlspecialchars($game['genre']) ?>
+                            </span>
+                        </div>
+                        
+                        <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                            <?= htmlspecialchars($game['game_description']) ?>
+                        </p>
+                        
+                        <div class="flex items-center text-sm text-gray-400 mb-4">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            <?= htmlspecialchars($game['release_date']) ?>
+                        </div>
+                    </div>
+                </a>
+                <div class="absolute bottom-6 right-6">
+                    <form action="" method="POST">
+                        <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                        <button type="submit" name="add" class="text-red-400 hover:text-red-300">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </form>
                 </div>
-                 
-                
             </div>
           
                                         
@@ -223,22 +202,6 @@ echo $game->favorisGame($gameid,$userid);
 
    
 
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.game-card');
-        
-        cards.forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                card.style.setProperty('--mouse-x', `${x}px`);
-                card.style.setProperty('--mouse-y', `${y}px`);
-            });
-        });
-    });
-
-    </script>
+    
 </body>
 </html> 
