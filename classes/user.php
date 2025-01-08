@@ -308,6 +308,23 @@ JOIN games ON games.game_id = favoris.game_id
     }
 
 }
+public function showuserid($userid){
+    try{
+     $user="SELECT * FROM users WHERE user_id=:user_id ";
+    $showuser=$this->db->getConnection()->prepare($user);
+     $showuser->execute([':user_id'=>$userid]);
+return  $showuser->fetchAll(PDO::FETCH_ASSOC);
+
+    }
+    catch (Exception $e) {
+          
+        error_log("Error   " . $e->getMessage());
+        return false;
+    }
+    
+   
+
+}
 
 
 

@@ -1,3 +1,32 @@
+<?php
+require '../classes/game.php';
+require '../classes/collection.php';
+require '../classes/user.php';
+
+if (!isset($_SESSION['username'])) {
+    header('Location: ../auth/signIn.php');
+    exit();
+}
+
+$username = $_SESSION['username'];
+$userid = $_SESSION['user_id'];
+$user1= new User();
+$user=$user1->showuserid($userid) ;
+//print_r($user);
+foreach($user as $test){
+    $name=$test['username'];
+    $id=$test['id'];
+    $user_email=$test['user_email'];
+    $user_password=$test['user_password'];
+   
+   
+}
+
+echo" hello";
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -49,7 +78,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Nom d'utilisateur</p>
-                                <p class="text-lg">JohnDoe123</p>
+                                <p class="text-lg"><?php echo $name?></p>
                             </div>
                             <button onclick="toggleEdit('username')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -60,7 +89,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Email</p>
-                                <p class="text-lg">john.doe@example.com</p>
+                                <p class="text-lg"><?php echo $user_email; ?></p>
                             </div>
                             <button onclick="toggleEdit('email')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -71,7 +100,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Mot de passe</p>
-                                <p class="text-lg">••••••••</p>
+                                <p class="text-lg"></p>
                             </div>
                             <button onclick="toggleEdit('password')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
