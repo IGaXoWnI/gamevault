@@ -72,7 +72,6 @@ JOIN games ON games.game_id = library.game_id
 
 
 }
-//  deletee  par library 
 public function removeFromLibrary($gameid){
     try{
  $game="DELETE FROM library WHERE game_id=:game_id";

@@ -115,5 +115,54 @@ class Game {
             return false;
         }
     }
+
+    public function getGameRating($gameId) {
+        try {
+            $stmt = $this->pdo->prepare("SELECT AVG(rating) as average_rating FROM game_reviews WHERE game_id = ?");
+            $stmt->execute([$gameId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result['average_rating'] ? round($result['average_rating'], 1) : 0;
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return 0;
+        }
+    }
+
+
+    public function setGameRating($gameId, $userId, $rating, $review = null) {
+        try {
+            $checkStmt = $this->pdo->prepare("SELECT review_id FROM game_reviews WHERE game_id = ? AND user_id = ?");
+            $checkStmt->execute([$gameId, $userId]);
+            
+            if ($checkStmt->fetch()) {
+                $sql = "UPDATE game_reviews SET rating = ?, review = ?, created_at = NOW() WHERE game_id = ? AND user_id = ?";
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([$rating, $review, $gameId, $userId]);
+            } else {
+                $sql = "INSERT INTO game_reviews (game_id, user_id, rating, review, created_at) VALUES (?, ?, ?, ?, NOW())";
+                $stmt = $this->pdo->prepare($sql);
+                return $stmt->execute([$gameId, $userId, $rating, $review]);
+            }
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return false;
+        }
+    }
+
+    public function getGameReviews($gameId) {
+        try {
+            $sql = "SELECT r.*, u.username 
+                    FROM game_reviews r 
+                    JOIN users u ON r.user_id = u.user_id 
+                    WHERE r.game_id = ? 
+                    ORDER BY r.created_at DESC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$gameId]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            return [];
+        }
+    }
 }
 ?>

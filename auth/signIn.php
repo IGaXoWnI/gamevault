@@ -1,11 +1,11 @@
 <?php
 session_start();
-require_once '../classes/User.php';
-require_once '../classes/Database.php';
+require_once '../classes/user.php';
+require_once '../classes/database.php';
 
 $user_role = $_SESSION['role']; 
 
-$pdo = new Database();
+$pdo = new Database();  
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

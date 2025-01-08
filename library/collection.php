@@ -11,7 +11,7 @@ if (!isset($_SESSION['username'])) {
 
 $username = $_SESSION['username'];
 $userid=$_SESSION['user_id'];
-echo$userid ;
+
 
 
 
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
             $removelibrary = $library->removeFromLibrary($gameid);
             
            
-            echo "Game  removedd";
+
         } catch (Exception $e) {
            
             echo "Error: " . $e->getMessage();
