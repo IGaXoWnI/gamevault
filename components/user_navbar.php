@@ -20,7 +20,7 @@
                     <i class="fas fa-gamepad mr-2"></i>Bibliothèque
                 </a>
 
-                <a href="../library/favorites.php" class="text-gray-300 hover:text-white transition">
+                <a href="../library/favorises.php" class="text-gray-300 hover:text-white transition">
                     <i class="fas fa-star mr-2"></i>Favoris
                 </a>
                 <a href="../library/reviews.php" class="text-gray-300 hover:text-white transition">

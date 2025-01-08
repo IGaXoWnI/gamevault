@@ -2,6 +2,8 @@
 
 require '../classes/game.php';
 require '../classes/collection.php';
+require '../classes/user.php';
+
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
@@ -11,7 +13,7 @@ $username = $_SESSION['username'];
 $userid = $_SESSION['user_id'];
 
  if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    echo" dwda";
+   
     try{ $library= new library();
 print_r($library->addToLibrary($_POST['game_id'],$userid )) ;}
 catch (Exception $e) {
@@ -21,14 +23,27 @@ catch (Exception $e) {
 
 }
 else{ echo"  not work ";};
+//  favoris pat
   
-  
+  if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['favoris'])){
+    $gameid=$_POST['game_id'];
+   try{
+$game= new User();
+echo $game->favorisGame($gameid,$userid);
+
+
+   }
+   catch (Exception $e) {
+    error_log("Error  favoris : " . $e->getMessage());
+    return false;
+}
+  }
 
 
  
 
 
-var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
+
 
 
 
@@ -155,11 +170,16 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
                          class="w-full h-full object-cover transform transition duration-500 
                                 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div class="absolute top-4 right-4 flex space-x-2">
-                        <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
-                                     hover:bg-violet-500/50 transition duration-300 group">
+                    <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200;">
+                    <form  action= "" method="POST" >
+                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                           <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
+                                     hover:bg-violet-500/50 transition duration-300 group" name="favoris" id="icon">
                             <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
                         </button>
+                        </form>   
+
+                       
                     </div>
                 </div>
                 <div class="relative p-6" style="z-index:200;">
@@ -218,6 +238,7 @@ var_dump($_SERVER['REQUEST_METHOD'] == 'POST');
             });
         });
     });
+
     </script>
 </body>
 </html> 
