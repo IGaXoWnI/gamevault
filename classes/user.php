@@ -218,9 +218,99 @@ class User {
             error_log("Error deleting user: " . $e->getMessage());
             return false;
         }
-    }   
+    } 
 
     
+    
+
+// public function favorisGame($gameid,$userid) {
+//     $favoris=$this->db->getConnection()->prepare("SELECT * FROM favoris WHERE game_id=:game_id AND user_id=:user_id");
+//     $result=$favoris->execute([':game_id '=>$gameid,'user_id'=>$userid]);
+
+//     if($result->rowCount()>0){
+//         return false;
+//     } else{
+//          try {
+       
+//         $sql = "INSERT INTO favoris( game_id,user_id) VALUES (:game_id,user_id)";
+
+//         $favoris = $this->db-> getConnection()->prepare($sql); 
+//  $result=$favoris->execute([':game_id'=>$gameid,'user_id'=>$userid]
+//     ); 
+//     if ($result) {
+//         echo"khdma";
+//         return true;
+//     } else {
+//         echo" non khdma";
+       
+//         return false;
+//     }
+     
+//     } catch (Exception $e) {
+     
+//         error_log("Error add favorite game: " . $e->getMessage());
+       
+//     }
+//     }
+
+   
+// }
+public function favorisGame($gameid, $userid) {
+    
+    $favoris = $this->db->getConnection()->prepare("SELECT * FROM favoris WHERE game_id = :game_id AND user_id = :user_id");
+    $result = $favoris->execute([':game_id' => $gameid, ':user_id' => $userid]);
+
+    if ( $favoris->rowCount() > 0) {
+        $sql="DELETE  FROM favoris WHERE user_id=:user_id AND game_id=:game_id";
+       $deletefavoris=$this->db->getConnection()->prepare($sql);
+       return$deletefavoris->execute([':user_id'=>$userid,':game_id'=>$gameid]);
+       
+    } else {
+        try {
+           
+            $sql = "INSERT INTO favoris (game_id, user_id) VALUES (:game_id, :user_id)";
+            $favoris = $this->db->getConnection()->prepare($sql);
+            $execution = $favoris->execute([':game_id' => $gameid, ':user_id' => $userid]);
+
+            if ($execution) {
+               
+                return true;
+            } else {
+               
+                return false;
+            }
+        } catch (Exception $e) {
+          
+            error_log("Error   " . $e->getMessage());
+            return false;
+        }
+    }
+}
+// afichage des games favoris
+public function showFavoris($userid) {
+
+
+   
+    $game = "SELECT games.game_img, games.game_title, games.genre,games.game_description,games.release_date,games.added_at, users.user_id,games.game_id FROM favoris 
+JOIN games ON games.game_id = favoris.game_id  
+    JOIN users ON users.user_id = favoris.user_id 
+    WHERE users.user_id = :user_id";
+     $showgames=$this->db->getConnection()->prepare($game);
+     
+    $result=$showgames->execute([':user_id'=>$userid]);
+    if ($result) {
+       
+        return $showgames->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        
+        echo "Erreur d'exécution de la requête SQL.";
+        return [];
+    }
+
+}
+
+
+
 }
 
 

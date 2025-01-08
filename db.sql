@@ -22,7 +22,15 @@ create table games(
     added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
     release_date date not null ,
     user_id bigint references users(user_id)
+    
 
+);
+CREATE TABLE favoris (
+    favoris_id INT AUTO_INCREMENT PRIMARY KEY,  
+  user_id INT,                       
+   game_id INT,                        
+    FOREIGN KEY (user_id) REFERENCES users(user_id),  
+    FOREIGN KEY (game_id) REFERENCES games(game_id)          
 );
 
 CREATE TABLE game_reviews (
@@ -41,7 +49,7 @@ CREATE TABLE library (
     game_id INT,                               
     status ENUM('en_cours', 'termine', 'abandonné') NOT NULL DEFAULT 'en_cours',  
     play_time INT,                             
-    is_favorite BOOLEAN DEFAULT false,           
+           
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  
    
     FOREIGN KEY (user_id) REFERENCES users(user_id),  
