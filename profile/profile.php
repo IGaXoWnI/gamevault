@@ -1,15 +1,20 @@
 <?php
+
 require '../classes/game.php';
 require '../classes/collection.php';
 require '../classes/user.php';
-
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
 }
 
 $username = $_SESSION['username'];
+echo" session is".$username;
 $userid = $_SESSION['user_id'];
+echo $userid;
+// echo $_SESSION['username'];
+
+
 $user1= new User();
 $user=$user1->showuserid($userid) ;
 //print_r($user);
@@ -21,8 +26,63 @@ foreach($user as $test){
    
    
 }
+if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['name']) && !empty($_POST['updatename'])) {
+    echo" hello";
+    $usernam=$_POST['updatename'];
+    echo $usernam;
+    $id=$_POST['userid'];
+    $user1= new User();
+$user=$user1-> updateName($usernam, $id);
+}
+if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['email'])&& !empty($_POST['updatemail'])) {
+   try{
+    echo" hello";
+    $useremail=$_POST['updatemail'];
+    $id=$_POST['id_user'];
+    $user1= new User();
+ echo $user1-> updateemail($useremail, $id);
+   }  
+    catch (Exception $e) {
+          
+    error_log("Error   " . $e->getMessage());
+    return false;
+}
 
- if(iss);
+
+
+}
+
+ $error="";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submity'])) {
+    echo "nice";
+    $user2 = new User();
+ 
+    $userid = $_POST['id_us'];  
+    $passEnter = $_POST['pass_actuel'];
+    echo $passEnter;
+ 
+    if ($user2->verifiecode($userid, $passEnter)) {
+       
+    $pass=$_POST['new_pass'];
+    echo $pass;
+    if(!empty($pass)){
+        $user= new User();
+        $user->updatepass($pass,$userid);
+        
+    }
+    
+    } else {
+        
+        $error="password in correct";
+    }
+}
+
+
+
+
+
+
+
 ?>
 
 
@@ -78,7 +138,7 @@ foreach($user as $test){
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Nom d'utilisateur</p>
-                                <p class="text-lg"><?php echo $name?></p>
+                                <p class="text-lg"><?php  echo htmlspecialchars($name)?></p>
                             </div>
                             <button onclick="toggleEdit('username')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -89,7 +149,7 @@ foreach($user as $test){
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Email</p>
-                                <p class="text-lg"><?php echo $user_email; ?></p>
+                                <p class="text-lg"><?php echo htmlspecialchars($user_email) ?></p>
                             </div>
                             <button onclick="toggleEdit('email')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -100,7 +160,7 @@ foreach($user as $test){
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Mot de passe</p>
-                                <p class="text-lg"></p>
+                                <p class="text-lg">...........</p>
                             </div>
                             <button onclick="toggleEdit('password')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -111,22 +171,25 @@ foreach($user as $test){
                 </div>
 
                 <div id="username-form" class="hidden border-t border-white/10 p-6 bg-black/20">
-                    <form class="space-y-4">
-                        <input type="text" value="<?php echo $name?>"
+                    <form class="space-y-4" method="POST">
+                        <input type="text" value="<?php echo htmlspecialchars($name) ?>"  name="updatename"
+                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
+                               <input type="hidden" value="<?php echo htmlspecialchars($id) ?>"  name="userid"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
                         
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="name">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="name" >
                             Sauvegarder
                         </button>
                     </form>
                 </div>
 
                 <div id="email-form" class="hidden border-t border-white/10 p-6 bg-black/20">
-                    <form class="space-y-4">
-                        <input type="email" value="<?php echo $user_email?>"
+                    <form class="space-y-4" method="POST">
+                        <input type="email" value="<?php echo htmlspecialchars($user_email) ?>" name="updatemail"  
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
                        
-                               
+                               <input type="hidden" value="<?php echo htmlspecialchars($id) ?>"  name="id_user"
+                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
                         <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="email">
                             Sauvegarder
                         </button>
@@ -134,12 +197,16 @@ foreach($user as $test){
                 </div>
 
                 <div id="password-form" class="hidden border-t border-white/10 p-6 bg-black/20">
-                    <form class="space-y-4">
-                        <input type="password" placeholder="Mot de passe actuel"
+                    <form class="space-y-4" method="POST">
+                        <input type="password" placeholder="Mot de passe actuel" name="pass_actuel"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <input type="password" placeholder="Nouveau mot de passe"
+                               <div> <?php echo $error?></div>
+                        <input type="password" placeholder="Nouveau mot de passe" name="new_pass"
+                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500"> 
+                                
+                               <input type="hidden" value="<?php echo htmlspecialchars($id) ?>"  name="id_us"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="submity">
                             Sauvegarder
                         </button>
                     </form>
