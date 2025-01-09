@@ -15,14 +15,14 @@ $user=$user1->showuserid($userid) ;
 //print_r($user);
 foreach($user as $test){
     $name=$test['username'];
-    $id=$test['id'];
+    $id=$test['user_id'];
     $user_email=$test['user_email'];
     $user_password=$test['user_password'];
    
    
 }
 
-echo" hello";
+ if(iss);
 ?>
 
 
@@ -47,7 +47,7 @@ echo" hello";
                 <span class="absolute bottom-4 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-gray-900"></span>
             </div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-                JohnDoe123
+            <?php echo $name?>
             </h1>
             <p class="text-gray-400 mt-2">Membre depuis Janvier 2024</p>
         </div>
@@ -112,11 +112,10 @@ echo" hello";
 
                 <div id="username-form" class="hidden border-t border-white/10 p-6 bg-black/20">
                     <form class="space-y-4">
-                        <input type="text" value="JohnDoe123"
+                        <input type="text" value="<?php echo $name?>"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <input type="password" placeholder="Mot de passe actuel"
-                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="name">
                             Sauvegarder
                         </button>
                     </form>
@@ -124,11 +123,11 @@ echo" hello";
 
                 <div id="email-form" class="hidden border-t border-white/10 p-6 bg-black/20">
                     <form class="space-y-4">
-                        <input type="email" value="john.doe@example.com"
+                        <input type="email" value="<?php echo $user_email?>"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <input type="password" placeholder="Mot de passe actuel"
-                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                       
+                               
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="email">
                             Sauvegarder
                         </button>
                     </form>

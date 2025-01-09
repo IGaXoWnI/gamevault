@@ -325,6 +325,11 @@ return  $showuser->fetchAll(PDO::FETCH_ASSOC);
    
 
 }
+ public function updateusername($username,$userid){
+    $username="UPDATE users  SET username=:username WHERE user_id=:user_id";
+    $update=$this->db->prepare($username);
+    return $update->execute([':username'=>$username,':user_id'=>$userid]);
+ }
 
 
 
