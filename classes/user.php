@@ -325,15 +325,63 @@ return  $showuser->fetchAll(PDO::FETCH_ASSOC);
    
 
 }
- public function updateusername($username,$userid){
-    $username="UPDATE users  SET username=:username WHERE user_id=:user_id";
-    $update=$this->db->prepare($username);
-    return $update->execute([':username'=>$username,':user_id'=>$userid]);
+public function updateName($name,$userid){
+    $username="UPDATE users SET username=:username WHERE user_id=:user_id";
+    $update=$this->db->getConnection()->prepare($username);
+    return  $update->execute([':username'=>$name,':user_id'=>$userid]);
+
+
+}
+public function updateemail($useremail,$userid){
+    $username="UPDATE users SET user_email=:user_email WHERE user_id=:user_id";
+    $update=$this->db->getConnection()->prepare($username);
+    return  $update->execute(['user_email'=>$useremail,':user_id'=>$userid]);
+
+}
+public function verifiecode($userid,$passEnter){
+    $user="SELECT user_password  FROM users WHERE user_id=:user_id";
+
+    $password=$this->db->getConnection()->prepare($user);
+    
+    $password->execute([':user_id'=>$userid]);
+
+    $passwordDB=$password->fetch();
+
+if ($passwordDB) {
+    return password_verify($passEnter, $passwordDB['user_password']);
+}else {return false;}
+ 
+
+    
+
+
+}
+public function updatepass($pass,$userid){
+    try{
+        $hashedPassword = password_hash($pass, PASSWORD_DEFAULT);
+         $password="UPDATE users SET user_password=:user_password WHERE user_id=:user_id";
+    $update=$this->db->getConnection()->prepare($password);
+    return  $update->execute([':user_password'=>$hashedPassword,':user_id'=> $userid]);
+    }
+    catch (Exception $e) {
+          
+        error_log("Error   " . $e->getMessage());
+        return false;
+    }
+    
+   
+
+
+}
+
+
+
+  
  }
 
 
 
-}
+
 
 
 
