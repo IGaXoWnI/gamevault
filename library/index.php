@@ -2,6 +2,7 @@
 
 require '../classes/game.php';
 require '../classes/collection.php';
+require '../classes/user.php';
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
@@ -20,6 +21,19 @@ catch (Exception $e) {
 
 
 }
+if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['favoris'])){
+    $gameid=$_POST['game_id'];
+   try{
+$game= new User();
+echo $game->favorisGame($gameid,$userid);
+
+
+   }
+   catch (Exception $e) {
+    error_log("Error  favoris : " . $e->getMessage());
+    return false;
+}
+  }
 
   
   
@@ -146,18 +160,23 @@ catch (Exception $e) {
             foreach ($games as $game): ?>
             <div class="game-card group relative bg-gradient-to-br from-white/[0.075] to-white/[0.035] 
                         rounded-2xl overflow-hidden border border-white/10 transition-all duration-300
-                        hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/10">
-                <a href="game_details.php?id=<?= htmlspecialchars($game['game_id']) ?>" class="block">
+                        hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/10" >
+                <a href="game_details.php?id=<?= htmlspecialchars($game['game_id']) ?>" >
                     <div class="aspect-[4/3] overflow-hidden">
                         <img src="<?= htmlspecialchars($game['game_img']) ?>" 
                              alt="<?= htmlspecialchars($game['game_title']) ?>"
                              class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute top-4 right-4 flex space-x-2">
-                            <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
-                                         hover:bg-violet-500/50 transition duration-300 group">
+                        <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200">
+                        <form  action= "" method="POST" >
+                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                           <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
+                                         hover:bg-violet-500/50 transition duration-300 group" name="favoris">
                                 <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
                             </button>
+                        </form>   
+
+                           
                         </div>
                     </div>
                     <div class="relative p-6" style="z-index:200;">
@@ -179,7 +198,7 @@ catch (Exception $e) {
                         </div>
                     </div>
                 </a>
-                <div class="absolute bottom-6 right-6">
+                <div class="absolute bottom-6 right-6"  style="z-index:200;">
                     <form action="" method="POST">
                         <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
                         <button type="submit" name="add" class="text-red-400 hover:text-red-300">

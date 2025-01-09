@@ -1,3 +1,32 @@
+<?php
+require '../classes/game.php';
+require '../classes/collection.php';
+require '../classes/user.php';
+
+if (!isset($_SESSION['username'])) {
+    header('Location: ../auth/signIn.php');
+    exit();
+}
+
+$username = $_SESSION['username'];
+$userid = $_SESSION['user_id'];
+$user1= new User();
+$user=$user1->showuserid($userid) ;
+//print_r($user);
+foreach($user as $test){
+    $name=$test['username'];
+    $id=$test['user_id'];
+    $user_email=$test['user_email'];
+    $user_password=$test['user_password'];
+   
+   
+}
+
+ if(iss);
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -18,7 +47,7 @@
                 <span class="absolute bottom-4 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-gray-900"></span>
             </div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-                JohnDoe123
+            <?php echo $name?>
             </h1>
             <p class="text-gray-400 mt-2">Membre depuis Janvier 2024</p>
         </div>
@@ -49,7 +78,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Nom d'utilisateur</p>
-                                <p class="text-lg">JohnDoe123</p>
+                                <p class="text-lg"><?php echo $name?></p>
                             </div>
                             <button onclick="toggleEdit('username')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -60,7 +89,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Email</p>
-                                <p class="text-lg">john.doe@example.com</p>
+                                <p class="text-lg"><?php echo $user_email; ?></p>
                             </div>
                             <button onclick="toggleEdit('email')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -71,7 +100,7 @@
                         <div class="flex items-center justify-between p-4 bg-black/20 rounded-lg">
                             <div>
                                 <p class="text-sm text-gray-400">Mot de passe</p>
-                                <p class="text-lg">••••••••</p>
+                                <p class="text-lg"></p>
                             </div>
                             <button onclick="toggleEdit('password')" 
                                     class="bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 px-4 py-2 rounded-lg border border-indigo-500/30 transition-all duration-200">
@@ -83,11 +112,10 @@
 
                 <div id="username-form" class="hidden border-t border-white/10 p-6 bg-black/20">
                     <form class="space-y-4">
-                        <input type="text" value="JohnDoe123"
+                        <input type="text" value="<?php echo $name?>"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <input type="password" placeholder="Mot de passe actuel"
-                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                        
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="name">
                             Sauvegarder
                         </button>
                     </form>
@@ -95,11 +123,11 @@
 
                 <div id="email-form" class="hidden border-t border-white/10 p-6 bg-black/20">
                     <form class="space-y-4">
-                        <input type="email" value="john.doe@example.com"
+                        <input type="email" value="<?php echo $user_email?>"
                                class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <input type="password" placeholder="Mot de passe actuel"
-                               class="w-full bg-gray-800/50 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:border-indigo-500">
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                       
+                               
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors" name="email">
                             Sauvegarder
                         </button>
                     </form>

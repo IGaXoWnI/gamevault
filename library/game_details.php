@@ -1,9 +1,15 @@
 <?php
 require '../classes/game.php';
+
+
+
 if (!isset($_SESSION['username'])) {
     header('Location: ../auth/signIn.php');
     exit();
 }
+
+$username = $_SESSION['username'];
+$userid = $_SESSION['user_id'];
 
 $game = new Game();
 $gameId = isset($_GET['id']) ? $_GET['id'] : null;
