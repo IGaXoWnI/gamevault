@@ -56,15 +56,15 @@ CREATE TABLE library (
     FOREIGN KEY (game_id) REFERENCES games(game_id)    
 );
 
-
-
-create TABLE chat_messages{
+CREATE TABLE chat_messages (
     chat_id INT AUTO_INCREMENT PRIMARY KEY,
-     user_id INT, 
-     message TEXT,
-     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-       FOREIGN KEY (user_id) REFERENCES users(user_id)
-}
+    user_id INT,
+    game_id INT,
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (game_id) REFERENCES games(game_id)
+);
 
 
 
