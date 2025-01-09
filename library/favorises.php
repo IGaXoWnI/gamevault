@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['favoris'])){
     $gameid=$_POST['game_id'];
    try{
 $game= new User();
-echo $game->favorisGame($gameid,$userid);
+$game->favorisGame($gameid,$userid);
 
 
    }

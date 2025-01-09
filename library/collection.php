@@ -174,10 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                                 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute top-4 right-4 flex space-x-2">
-                        <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
-                                     hover:bg-violet-500/50 transition duration-300 group">
-                            <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
-                        </button>
+                    <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
                     </div>
                 </div>
                 <div class="relative p-6" style="z-index:200;">
@@ -190,9 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                        <form method="POST" style="display: inline;" 
                                               onsubmit="return confirm('do you want to delete this game ?  ');">
                                             <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                            <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
+                                            
                                         </form>     
                         
                     </div>
