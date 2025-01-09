@@ -1,5 +1,6 @@
 <?php
 require '../classes/game.php';
+require '../classes/chat.php';
 
 
 
@@ -13,6 +14,7 @@ $userid = $_SESSION['user_id'];
 
 $game = new Game();
 $gameId = isset($_GET['id']) ? $_GET['id'] : null;
+$chat = new Chat();
 
 if (!$gameId) {
     header('Location: index.php');
@@ -38,6 +40,34 @@ if (isset($_POST['submit_review'])) {
             exit();
         }
     }
+}
+
+if (isset($_POST['chat_message'])) {
+    $message = trim($_POST['chat_message']);
+    if (!empty($message)) {
+        if (isset($_SESSION['user_id']) && isset($_GET['id'])) {
+            $userId = $_SESSION['user_id'];
+            $gameId = $_GET['id'];
+            
+            var_dump([
+                'message' => $message,
+                'userId' => $userId,
+                'gameId' => $gameId
+            ]);
+            
+            if ($chat->saveMessage($userId, $gameId, $message)) {
+                header("Location: game_details.php?id=" . $gameId);
+                exit();
+            } else {
+                echo "Error saving message";
+            }
+        }
+    }
+}
+
+if (isset($_GET['fetch_messages'])) {
+    $messages = $chat->getMessages($gameId);
+    exit(json_encode($messages));
 }
 ?>
 
@@ -170,6 +200,43 @@ if (isset($_POST['submit_review'])) {
                 <?php endif; ?>
             </div>
         </div>
+
+        <div class="mt-16">
+            <h2 class="text-2xl font-bold mb-8">Chat</h2>
+            <div class="bg-white/5 rounded-2xl p-6">
+                <div id="chat-messages" class="h-72 overflow-y-auto mb-4 space-y-2 p-2">
+                    <?php 
+                    $messages = $chat->getMessages($gameId);
+                    if (!empty($messages)): 
+                        foreach ($messages as $message): 
+                    ?>
+                        <div class="p-2 rounded bg-white/10 hover:bg-white/15 transition-colors">
+                            <span class="font-bold text-violet-400"><?= htmlspecialchars($message['username']) ?></span>: 
+                            <span class="text-gray-300"><?= htmlspecialchars($message['message']) ?></span>
+                            <span class="text-xs text-gray-500 ml-2"><?= date('H:i', strtotime($message['created_at'])) ?></span>
+                        </div>
+                    <?php 
+                        endforeach; 
+                    else: 
+                    ?>
+                        <div class="p-2 text-gray-400 text-center">Pas encore de messages.</div>
+                    <?php endif; ?>
+                </div>
+                
+                <form method="POST" class="flex gap-2">
+                    <input type="text" 
+                           name="chat_message"
+                           required
+                           class="flex-1 bg-white/5 rounded-lg p-3 text-gray-100 focus:ring-2 focus:ring-violet-500 focus:outline-none"
+                           placeholder="Votre message..."
+                           autocomplete="off">
+                    <button type="submit" 
+                            class="bg-violet-600 hover:bg-violet-700 text-white py-2 px-6 rounded-lg transition-colors">
+                        Envoyer
+                    </button>
+                </form>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -181,6 +248,34 @@ if (isset($_POST['submit_review'])) {
             star.classList.toggle('text-yellow-400', index < rating);
         });
     }
+
+    const chatForm = document.getElementById('chat-form');
+    const chatMessages = document.getElementById('chat-messages');
+    const messageInput = document.getElementById('message-input');
+    const username = '<?= htmlspecialchars($_SESSION['username']) ?>';
+
+    chatForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const message = messageInput.value.trim();
+        if (message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'p-2 rounded bg-white/10';
+            messageDiv.innerHTML = `
+                <span class="font-bold text-violet-400">${username}</span>: 
+                <span class="text-gray-300">${message}</span>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            messageInput.value = '';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatMessages = document.getElementById('chat-messages');
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
     </script>
+
+  
 </body>
 </html> 

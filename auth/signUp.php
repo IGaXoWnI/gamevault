@@ -1,7 +1,7 @@
 <?php
 
 require_once '../classes/user.php';  
-require_once '../classes/Database.php';  
+require_once '../classes/database.php';  
 $pdo = new Database();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
