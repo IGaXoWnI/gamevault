@@ -16,61 +16,53 @@ require_once 'database.php';
 
 
 
-public function addToLibrary($game_id, $user_id) {
-  
-   $stmt = $this->pdo->prepare("SELECT * FROM library WHERE game_id = :game_id AND user_id = :user_id");
-   $stmt->execute([':game_id' => $game_id, ':user_id' => $user_id]);
+public function addToLibrary($game_id, $user_id, $play_time, $status) {
+    $stmt = $this->pdo->prepare("SELECT * FROM library WHERE game_id = :game_id AND user_id = :user_id");
+    $stmt->execute([':game_id' => $game_id, ':user_id' => $user_id]);
 
-  
-   if ($stmt->rowCount() > 0) {
-      
-       return false; 
-   } else {
-      
-       $games = "INSERT INTO library (game_id, user_id) VALUES (:game_id, :user_id)";
-       $addToLibrary = $this->pdo->prepare($games);
+    if ($stmt->rowCount() > 0) {
+        return false; 
+    } else {
+        $games = "INSERT INTO library (game_id, user_id, play_time, status) 
+                  VALUES (:game_id, :user_id, :play_time, :status)";
+        $addToLibrary = $this->pdo->prepare($games);
 
         $result = $addToLibrary->execute([
-           ':game_id' => $game_id,
-           ':user_id' => $user_id
-       ]);
-       if ($result) {
-       
-        return $addToLibrary->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        
-        echo "Erreur d'exécution de la requête SQL.";
-        return [];
+            ':game_id' => $game_id,
+            ':user_id' => $user_id,
+            ':play_time' => $play_time,
+            ':status' => $status
+        ]);
+
+        if ($result) {
+            return $addToLibrary->fetchAll(PDO::FETCH_ASSOC);
+        } else {
+            echo "Erreur d'exécution de la requête SQL.";
+            return [];
+        }
     }
-      
+}
 
 
-      
-   }}
-
-
-public function showInlibrary(){
-  
-    $userid=$_SESSION['user_id'];
-    $game = "SELECT games.game_img, games.game_title, games.genre,games.game_description,games.release_date,games.added_at, users.user_id,games.game_id FROM library 
-JOIN games ON games.game_id = library.game_id  
-    JOIN users ON users.user_id = library.user_id 
-    WHERE users.user_id = :user_id";
-     $showgames=$this->pdo->prepare($game);
-     
-    $result=$showgames->execute([':user_id'=>$userid]);
+public function showInlibrary() {
+    $userid = $_SESSION['user_id'];
+    $game = "SELECT games.game_img, games.game_title, games.genre, 
+                    games.game_description, games.release_date, games.added_at, 
+                    users.user_id, games.game_id, library.play_time, library.status 
+             FROM library 
+             JOIN games ON games.game_id = library.game_id  
+             JOIN users ON users.user_id = library.user_id 
+             WHERE users.user_id = :user_id";
+    
+    $showgames = $this->pdo->prepare($game);
+    $result = $showgames->execute([':user_id' => $userid]);
+    
     if ($result) {
-       
         return $showgames->fetchAll(PDO::FETCH_ASSOC);
     } else {
-        
         echo "Erreur d'exécution de la requête SQL.";
         return [];
     }
-   
-
-
-
 }
 public function removeFromLibrary($gameid){
     try{

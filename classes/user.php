@@ -11,7 +11,6 @@ class User {
 
     public function __construct() {
         $this->db = new Database();
-        // $this->db-> getConnection() ;
 
     }
 
@@ -39,8 +38,8 @@ class User {
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             $userId = $this->db->insert(
-                "INSERT INTO users (username, user_email, user_password, role, is_banned) 
-                VALUES (?, ?, ?, ?, false)",
+                "INSERT INTO users (username, user_email, user_password, role) 
+                VALUES (?, ?, ?, ?)",
                 [$username, $email, $hashedPassword, $role]
             );
 
@@ -69,9 +68,7 @@ class User {
 
             $user = $user[0];
 
-            if ($user['is_banned']) {
-                return ['success' => false, 'message' => 'Account is banned'];
-            }
+            
 
             if (password_verify($password, $user['user_password'])) {
                 $this->id = $user['user_id'];
@@ -223,38 +220,7 @@ class User {
     
     
 
-// public function favorisGame($gameid,$userid) {
-//     $favoris=$this->db->getConnection()->prepare("SELECT * FROM favoris WHERE game_id=:game_id AND user_id=:user_id");
-//     $result=$favoris->execute([':game_id '=>$gameid,'user_id'=>$userid]);
 
-//     if($result->rowCount()>0){
-//         return false;
-//     } else{
-//          try {
-       
-//         $sql = "INSERT INTO favoris( game_id,user_id) VALUES (:game_id,user_id)";
-
-//         $favoris = $this->db-> getConnection()->prepare($sql); 
-//  $result=$favoris->execute([':game_id'=>$gameid,'user_id'=>$userid]
-//     ); 
-//     if ($result) {
-//         echo"khdma";
-//         return true;
-//     } else {
-//         echo" non khdma";
-       
-//         return false;
-//     }
-     
-//     } catch (Exception $e) {
-     
-//         error_log("Error add favorite game: " . $e->getMessage());
-       
-//     }
-//     }
-
-   
-// }
 public function favorisGame($gameid, $userid) {
     
     $favoris = $this->db->getConnection()->prepare("SELECT * FROM favoris WHERE game_id = :game_id AND user_id = :user_id");
@@ -286,7 +252,14 @@ public function favorisGame($gameid, $userid) {
         }
     }
 }
-// afichage des games favoris
+
+public function favoriteGamesCount($userid){
+    $favoriteGamesCount = "SELECT COUNT(*) FROM favoris WHERE user_id = $userid";
+    $favoriteGamesCount_run = $this->db->getConnection()->prepare($favoriteGamesCount);
+    $favoriteGamesCount_run->execute();
+    return $favoriteGamesCount_run->fetch();
+}   
+
 public function showFavoris($userid) {
 
 
