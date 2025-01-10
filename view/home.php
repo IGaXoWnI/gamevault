@@ -1,10 +1,28 @@
 <?php
 session_start();
+include '../classes/admin.php';
+$admin=new admin();
+
+
+$actif=$admin->countAtifs();
+$ban=$admin->countBan();
+$games=$admin->countGames();
+$max=$admin->dernierGame();
+$last_signup=$admin->dernierinscrep();
+$last_date_ban=$admin-> dernierBan();
+
+
+
+
+
+
+
 $username = $_SESSION['username'];
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header('Location: ../auth/signIn.php');
     exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -39,7 +57,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Catégorie</th>
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Total</th>
                                 <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Dernière mise à jour</th>
-                                <th class="px-6 py-4 text-left text-sm font-medium text-gray-300">Status</th>
+                               
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-700">
@@ -50,11 +68,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                         <span>Utilisateurs Actifs</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">1,234</td>
-                                <td class="px-6 py-4 text-gray-400">Il y a 5 minutes</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-green-900 text-green-300 rounded-full text-xs">Normal</span>
-                                </td>
+                                <td class="px-6 py-4"><?php echo ($actif) ?></td>
+                                <td class="px-6 py-4 text-gray-400"><?php  echo $last_signup;?></td>
+                               
                             </tr>
                             <tr class="hover:bg-gray-700">
                                 <td class="px-6 py-4">
@@ -63,11 +79,9 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                         <span>Jeux en Base</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">456</td>
-                                <td class="px-6 py-4 text-gray-400">Il y a 1 heure</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-green-900 text-green-300 rounded-full text-xs">Normal</span>
-                                </td>
+                                <td class="px-6 py-4"> <?php echo $games?></td>
+                                <td class="px-6 py-4 text-gray-400"><?php echo $max;?></td>
+                                
                             </tr>
                             <tr class="hover:bg-gray-700">
                                 <td class="px-6 py-4">
@@ -76,25 +90,11 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                         <span>Utilisateurs Bannis</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4">23</td>
-                                <td class="px-6 py-4 text-gray-400">Il y a 30 minutes</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-red-900 text-red-300 rounded-full text-xs">Attention</span>
-                                </td>
+                                <td class="px-6 py-4"><?php echo $ban?></td>
+                                <td class="px-6 py-4 text-gray-400"><?php echo $last_date_ban;?></td>
+                                >
                             </tr>
-                            <tr class="hover:bg-gray-700">
-                                <td class="px-6 py-4">
-                                    <div class="flex items-center space-x-3">
-                                        <i class="fas fa-flag text-yellow-400"></i>
-                                        <span>Signalements en Attente</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">15</td>
-                                <td class="px-6 py-4 text-gray-400">Il y a 10 minutes</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-2 py-1 bg-yellow-900 text-yellow-300 rounded-full text-xs">À traiter</span>
-                                </td>
-                            </tr>
+                           
                         </tbody>
                     </table>
                 </div>

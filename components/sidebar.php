@@ -56,9 +56,17 @@
                 <p class="text-sm text-gray-400">Administrateur</p>
             </div>
         </div>
+        <a href="../profile/profile.php" class="block px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
+                            <i class="fas fa-user mr-2"></i>Mon Profil
+                        </a>
         <a href="../auth/signOut.php" class="flex items-center space-x-3 hover:bg-gray-800 p-3 rounded-lg transition">
             <i class="fas fa-sign-out-alt"></i>
             <span>Déconnexion</span>
         </a>
+        
+        
     </div>
+    <!--  -->
+   
+            
 </aside> 
