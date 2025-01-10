@@ -22,6 +22,9 @@
                 <a href="../library/favorises.php" class="text-gray-300 hover:text-white transition">
                     <i class="fas fa-star mr-2"></i>Favoris
                 </a>
+                <a href="../library/historique.php" class="text-gray-300 hover:text-white transition">
+                    <i class="fas fa-history mr-2"></i>Historique
+                </a>
             </div>
 
             <div class="flex items-center space-x-4">

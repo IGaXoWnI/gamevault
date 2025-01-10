@@ -71,3 +71,12 @@ CREATE TABLE chat_messages (
 
 
 
+CREATE TABLE history (
+    history_id INT PRIMARY KEY AUTO_INCREMENT,
+    game_id INT NOT NULL,
+    user_id INT NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    action_date DATETIME NOT NULL,
+    FOREIGN KEY (game_id) REFERENCES games(game_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
