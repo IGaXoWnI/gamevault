@@ -9,20 +9,21 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
-echo" session is".$username;
+
 $userid = $_SESSION['user_id'];
-echo $userid;
-// echo $_SESSION['username'];
+
+
 
 
 $user1= new User();
 $user=$user1->showuserid($userid) ;
-//print_r($user);
+
 foreach($user as $test){
     $name=$test['username'];
     $id=$test['user_id'];
     $user_email=$test['user_email'];
     $user_password=$test['user_password'];
+    $date=$test['added_at'];
    
    
 }
@@ -102,14 +103,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submity'])) {
     <div class="max-w-4xl mx-auto px-4 py-12">
         <div class="mb-12 text-center">
             <div class="relative inline-block">
-                <img src="https://api.dicebear.com/6.x/initials/svg?seed=JohnDoe" 
+            <img src="https://api.dicebear.com/6.x/initials/svg?seed=<?= htmlspecialchars($username) ?>" 
                      class="w-32 h-32 rounded-full border-4 border-indigo-500/30 mb-4">
                 <span class="absolute bottom-4 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-gray-900"></span>
             </div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
             <?php echo $name?>
             </h1>
-            <p class="text-gray-400 mt-2">Membre depuis Janvier 2024</p>
+            <p class="text-gray-400 mt-2"><?php echo date('Y/m/d', strtotime($date)); ?></p>
         </div>
 
         <div class="grid grid-cols-3 gap-6 mb-12">

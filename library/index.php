@@ -198,6 +198,8 @@ $game->favorisGame($gameid,$userid);
                         </div>
                     </div>
                 </a>
+              
+               
                 <div class="absolute bottom-6 right-6"  style="z-index:200;">
                     <form action="" method="POST">
                         <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">

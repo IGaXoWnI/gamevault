@@ -8,7 +8,9 @@ create table users(
     user_password varchar(100) not null ,
     role varchar(25) not null ,
 
- status ENUM('actif', 'banni') DEFAULT 'actif'
+ status ENUM('actif', 'banni') DEFAULT 'actif',
+   added_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ban_date TIMESTAMP  NULL
 );
 
 
