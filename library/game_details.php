@@ -35,7 +35,11 @@ if (isset($_POST['submit_review'])) {
     $review = isset($_POST['review']) ? trim($_POST['review']) : null;
     
     if ($rating && $rating >= 1 && $rating <= 5) {
-        if ($game->setGameRating($gameId, $_SESSION['user_id'], $rating, $review)) {
+        $result = $game->setGameRating($gameId, $_SESSION['user_id'], $rating, $review);
+        if (is_string($result)) {
+            // This is the error message for banned users
+            $error_message = $result;
+        } else if ($result) {
             header("Location: game_details.php?id=" . $gameId);
             exit();
         }
@@ -49,17 +53,16 @@ if (isset($_POST['chat_message'])) {
             $userId = $_SESSION['user_id'];
             $gameId = $_GET['id'];
             
-            var_dump([
-                'message' => $message,
-                'userId' => $userId,
-                'gameId' => $gameId
-            ]);
+            $result = $chat->saveMessage($userId, $gameId, $message);
             
-            if ($chat->saveMessage($userId, $gameId, $message)) {
+            if (is_string($result)) {
+                // This is the error message for banned users
+                $chat_error = $result;
+            } else if ($result) {
                 header("Location: game_details.php?id=" . $gameId);
                 exit();
             } else {
-                echo "Error saving message";
+                $chat_error = "Error saving message";
             }
         }
     }
@@ -146,6 +149,12 @@ if (isset($_GET['fetch_messages'])) {
         <div class="mt-16">
             <h2 class="text-2xl font-bold mb-8">Avis et Notes</h2>
 
+            <?php if (isset($error_message)): ?>
+                <div class="bg-red-500/20 text-red-300 p-4 rounded-lg mb-4">
+                    <?= htmlspecialchars($error_message) ?>
+                </div>
+            <?php endif; ?>
+
             <form action="" method="POST" class="bg-white/5 rounded-2xl p-6 mb-8">
                 <div class="space-y-4">
                     <div class="star-rating flex gap-1">
@@ -204,6 +213,12 @@ if (isset($_GET['fetch_messages'])) {
         <div class="mt-16">
             <h2 class="text-2xl font-bold mb-8">Chat</h2>
             <div class="bg-white/5 rounded-2xl p-6">
+                <?php if (isset($chat_error)): ?>
+                    <div class="bg-red-500/20 text-red-300 p-4 rounded-lg mb-4">
+                        <?= htmlspecialchars($chat_error) ?>
+                    </div>
+                <?php endif; ?>
+                
                 <div id="chat-messages" class="h-72 overflow-y-auto mb-4 space-y-2 p-2">
                     <?php 
                     $messages = $chat->getMessages($gameId);

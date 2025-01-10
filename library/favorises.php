@@ -97,38 +97,33 @@ $game->favorisGame($gameid,$userid);
                                 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200;">
-                    <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button class="" name="favoris">
-                                     
-                            <i class="fas fa-star yellow "id="icon"  id="icon"></i>
-                        </button>
-                        </form>   
-
-                       
+                        <form action="" method="POST">
+                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                            <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md hover:bg-violet-500/50 transition duration-300 group" 
+                                    name="favoris">
+                                <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
-                <div class="relative p-6" style="z-index:200;">
+                <div class="relative p-6">
                     <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
-                    <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
-                   
-                            <div class="flex items-center justify-between">
-                       
-                       <div class="flex space-x-1">
-                             
-                        
+                    
+                    <div class="mb-3">
+                        <span class="px-3 py-1 bg-violet-500/20 rounded-full text-violet-300 text-sm">
+                            <?= htmlspecialchars($game['genre']) ?>
+                        </span>
                     </div>
                     
-                                        
-                                      
-                        </div>
-                     
-                        
-                    </div>
+                    <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                        <?= htmlspecialchars($game['game_description']) ?>
+                    </p>
                     
+                    <div class="flex items-center text-sm text-gray-400 mb-4">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        <?= htmlspecialchars($game['release_date']) ?>
+                    </div>
                 </div>
-                 
-                
             </div>
           
                                         
