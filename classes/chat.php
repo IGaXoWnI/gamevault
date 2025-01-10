@@ -1,20 +1,25 @@
 <?php
+require_once 'database.php';
+
 class Chat {
-    private $db;
+    private $pdo;
 
     public function __construct() {
-        try {
-            $this->db = new PDO("mysql:host=localhost:3308;dbname=gamevault", "root", "");
-            $this->db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
-        }
+        $this->pdo = (new Database())->getConnection();
     }
 
     public function saveMessage($userId, $gameId, $message) {
         try {
-            $stmt = $this->db->prepare("INSERT INTO chat_messages (user_id, game_id, message) VALUES (?, ?, ?)");
-            return $stmt->execute([$userId, $gameId, $message]);
+            $checkUserStatus = $this->pdo->prepare("SELECT status FROM users WHERE user_id = ?");
+            $checkUserStatus->execute([$userId]);
+            $userStatus = $checkUserStatus->fetch();
+            
+            if ($userStatus['status'] === "actif") {
+                $stmt = $this->pdo->prepare("INSERT INTO chat_messages (user_id, game_id, message) VALUES (?, ?, ?)");
+                return $stmt->execute([$userId, $gameId, $message]);
+            } else {
+                return "You are banned and do not have access to comment or chat on this page.";
+            }
         } catch (PDOException $e) {
             error_log("Save message error: " . $e->getMessage());
             return false;
@@ -23,22 +28,19 @@ class Chat {
 
     public function getMessages($gameId, $limit = 50) {
         try {
-            // Convert gameId to integer to ensure proper comparison
             $gameId = (int)$gameId;
             
-            // Simple query without JOIN first to debug
-            $stmt = $this->db->prepare("
+            $stmt = $this->pdo->prepare("
                 SELECT * FROM chat_messages WHERE game_id = ?
             ");
             
             $stmt->execute([$gameId]);
             $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
-            // If we have messages, get the usernames
             if (!empty($messages)) {
                 $result = [];
                 foreach ($messages as $message) {
-                    $userStmt = $this->db->prepare("
+                    $userStmt = $this->pdo->prepare("
                         SELECT username FROM users WHERE user_id = ?
                     ");
                     $userStmt->execute([$message['user_id']]);

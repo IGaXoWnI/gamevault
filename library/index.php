@@ -12,28 +12,30 @@ $username = $_SESSION['username'];
 $userid = $_SESSION['user_id'];
 
  if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    
-    try{ $library= new library();
-print_r($library->addToLibrary($_POST['game_id'],$userid )) ;}
-catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+    if(isset($_POST['add_to_collection'])) {
+        try {
+            $library = new Library();
+            $result = $library->addToLibrary(
+                $_POST['game_id'],
+                $userid,
+                $_POST['play_time'],
+                $_POST['status']
+            );
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+    else if(isset($_POST['favoris'])) {
+        $gameid = $_POST['game_id'];
+        try {
+            $game = new User();
+            $game->favorisGame($gameid, $userid);
+        } catch (Exception $e) {
+            error_log("Error favoris : " . $e->getMessage());
+            return false;
+        }
+    }
 }
-
-
-}
-if($_SERVER['REQUEST_METHOD'] === 'POST'&& isset($_POST['favoris'])){
-    $gameid=$_POST['game_id'];
-   try{
-$game= new User();
-$game->favorisGame($gameid,$userid);
-
-
-   }
-   catch (Exception $e) {
-    error_log("Error  favoris : " . $e->getMessage());
-    return false;
-}
-  }
 
   
   
@@ -103,16 +105,44 @@ $game->favorisGame($gameid,$userid);
                         </p>
                         <div class="flex flex-wrap gap-4">
                             <div class="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-                                <div class="text-2xl font-bold text-violet-400 mb-1">24</div>
+                                <div class="text-2xl font-bold text-violet-400 mb-1">
+                                    <?php 
+                                        $gameCounter = new Game();
+                                        $totalGames = $gameCounter->gamecountbyuser($userid);
+                                        echo htmlspecialchars($totalGames['COUNT(*)']); 
+                                    ?>
+                                </div>
                                 <div class="text-sm text-gray-400">Jeux</div>
                             </div>
                             <div class="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-                                <div class="text-2xl font-bold text-indigo-400 mb-1">3</div>
+                                <div class="text-2xl font-bold text-indigo-400 mb-1">
+                                    <?php 
+                                        $gameTermine = new Game();
+                                        $gamecountbyuserstatus = $gameTermine->gamecountbyuserstatus($userid, "En_cours");
+                                        echo htmlspecialchars($gamecountbyuserstatus); 
+                                    ?>
+                                </div>
                                 <div class="text-sm text-gray-400">En cours</div>
                             </div>
                             <div class="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
-                                <div class="text-2xl font-bold text-fuchsia-400 mb-1">14</div>
+                                <div class="text-2xl font-bold text-fuchsia-400 mb-1">
+                                    <?php 
+                                        $gameTermine = new Game();
+                                        $completedGames = $gameTermine->gamecountbyuserstatus($userid, "termine");
+                                        echo htmlspecialchars($completedGames);
+                                    ?>
+                                </div>
                                 <div class="text-sm text-gray-400">Terminés</div>
+                            </div>
+                            <div class="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
+                                <div class="text-2xl font-bold text-fuchsia-400 mb-1">
+                                    <?php 
+                                        $gameTermine = new Game();
+                                        $completedGames = $gameTermine->gamecountbyuserstatus($userid, "abandonné");
+                                        echo htmlspecialchars($completedGames);
+                                    ?>
+                                </div>
+                                <div class="text-sm text-gray-400">abandonné</div>
                             </div>
                         </div>
                     </div>
@@ -127,12 +157,7 @@ $game->favorisGame($gameid,$userid);
 
 
         <div class="flex flex-col md:flex-row gap-6 items-center mb-12">
-            <button class="bg-gradient-to-r from-violet-600 to-indigo-600 px-6 py-3 rounded-2xl
-                         hover:from-violet-700 hover:to-indigo-700 transition duration-300 transform hover:scale-105
-                         flex items-center space-x-3 shadow-lg shadow-violet-600/20">
-                <i class="fas fa-plus"></i>
-                <span>Ajouter un jeu</span>
-            </button>
+            
             <div class="flex-1 flex flex-wrap gap-4">
                 <div class="relative flex-1 min-w-[240px]">
                     <input type="text" 
@@ -161,52 +186,47 @@ $game->favorisGame($gameid,$userid);
             <div class="game-card group relative bg-gradient-to-br from-white/[0.075] to-white/[0.035] 
                         rounded-2xl overflow-hidden border border-white/10 transition-all duration-300
                         hover:border-violet-500/30 hover:shadow-lg hover:shadow-violet-500/10" >
-                <a href="game_details.php?id=<?= htmlspecialchars($game['game_id']) ?>" >
-                    <div class="aspect-[4/3] overflow-hidden">
-                        <img src="<?= htmlspecialchars($game['game_img']) ?>" 
-                             alt="<?= htmlspecialchars($game['game_title']) ?>"
-                             class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                        <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200">
-                        <form  action= "" method="POST" >
-                                           <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                           <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
+                <div class="aspect-[4/3] overflow-hidden">
+                    <img src="<?= htmlspecialchars($game['game_img']) ?>" 
+                         alt="<?= htmlspecialchars($game['game_title']) ?>"
+                         class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <div class="absolute top-4 right-4 flex space-x-2" style="z-index:200">
+                        <form action="" method="POST">
+                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                            <button class="p-2 bg-black/50 rounded-xl backdrop-blur-md 
                                          hover:bg-violet-500/50 transition duration-300 group" name="favoris">
                                 <i class="fas fa-star text-yellow-400 group-hover:text-white"></i>
                             </button>
                         </form>   
-
-                           
-                        </div>
                     </div>
-                    <div class="relative p-6" style="z-index:200;">
+                </div>
+                <div class="relative p-6" style="z-index:200;">
+                    <a href="game_details.php?id=<?= htmlspecialchars($game['game_id']) ?>">
                         <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
-                        
-                        <div class="mb-3">
-                            <span class="px-3 py-1 bg-violet-500/20 rounded-full text-violet-300 text-sm">
-                                <?= htmlspecialchars($game['genre']) ?>
-                            </span>
-                        </div>
-                        
-                        <p class="text-gray-400 text-sm mb-3 line-clamp-2">
-                            <?= htmlspecialchars($game['game_description']) ?>
-                        </p>
-                        
-                        <div class="flex items-center text-sm text-gray-400 mb-4">
-                            <i class="far fa-calendar-alt mr-2"></i>
-                            <?= htmlspecialchars($game['release_date']) ?>
-                        </div>
+                    </a>
+                    
+                    <div class="mb-3">
+                        <span class="px-3 py-1 bg-violet-500/20 rounded-full text-violet-300 text-sm">
+                            <?= htmlspecialchars($game['genre']) ?>
+                        </span>
                     </div>
-                </a>
-              
-               
-                <div class="absolute bottom-6 right-6"  style="z-index:200;">
-                    <form action="" method="POST">
-                        <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                        <button type="submit" name="add" class="text-red-400 hover:text-red-300">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </form>
+                    
+                    <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                        <?= htmlspecialchars($game['game_description']) ?>
+                    </p>
+                    
+                    <div class="flex items-center text-sm text-gray-400 mb-4">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        <?= htmlspecialchars($game['release_date']) ?>
+                    </div>
+                </div>
+                <div class="absolute bottom-6 right-6" style="z-index:200;">
+                    <button type="button" 
+                            onclick="openAddModal(<?= htmlspecialchars($game['game_id']) ?>, '<?= urlencode(htmlspecialchars($game['game_title'])) ?>')"
+                            class="text-red-400 hover:text-red-300">
+                        <i class="fas fa-plus"></i>
+                    </button>
                 </div>
             </div>
           
@@ -226,3 +246,61 @@ $game->favorisGame($gameid,$userid);
     
 </body>
 </html> 
+
+<div id="addGameModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center" style="z-index:1000;">
+    <div class="bg-[#1f1f1f] p-6 rounded-2xl w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Ajouter à la collection</h3>
+        <p id="gameTitle" class="text-gray-400 mb-4"></p>
+        
+        <form action="" method="POST" class="space-y-4">
+            <input type="hidden" name="game_id" id="modalGameId">
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-400 mb-2">Temps de jeu (heures)</label>
+                <input type="number" 
+                       name="play_time" 
+                       class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500/50"
+                       required>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-400 mb-2">Statut</label>
+                <select name="status" 
+                        class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 focus:outline-none focus:border-violet-500/50"
+                        required>
+                    <option value="en_cours">en_cours</option>
+                    <option value="termine">termine</option>
+                    <option value="abandonné">abandonné</option>
+                </select>
+            </div>
+            
+            <div class="flex justify-end space-x-3 mt-6">
+                <button type="button" 
+                        onclick="closeAddModal()"
+                        class="px-4 py-2 rounded-xl bg-gray-600 hover:bg-gray-700 transition">
+                    Annuler
+                </button>
+                <button type="submit" 
+                        name="add_to_collection"
+                        class="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 transition">
+                    Ajouter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openAddModal(gameId, gameTitle) {
+    const modal = document.getElementById('addGameModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.getElementById('modalGameId').value = gameId;
+    document.getElementById('gameTitle').textContent = decodeURIComponent(gameTitle);
+}
+
+function closeAddModal() {
+    document.getElementById('addGameModal').classList.add('hidden');
+    document.getElementById('addGameModal').classList.remove('flex');
+}
+</script> 

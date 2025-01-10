@@ -9,21 +9,17 @@ if (!isset($_SESSION['username'])) {
 }
 
 $username = $_SESSION['username'];
-
 $userid = $_SESSION['user_id'];
-
 
 
 
 $user1= new User();
 $user=$user1->showuserid($userid) ;
-
 foreach($user as $test){
     $name=$test['username'];
     $id=$test['user_id'];
     $user_email=$test['user_email'];
     $user_password=$test['user_password'];
-    $date=$test['added_at'];
    
    
 }
@@ -78,11 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submity'])) {
     }
 }
 
+$game = new Game();
+$user = new User();
 
+$gameCount = $game->gamecountbyuser($userid)[0];  
+$favoriteCount = $user->favoriteGamesCount($userid)[0];  
+$playTime = $game->timeplayed($userid)[0]; 
 
-
-
-
+$playTimeHours = $playTime;
 
 ?>
 
@@ -103,27 +102,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submity'])) {
     <div class="max-w-4xl mx-auto px-4 py-12">
         <div class="mb-12 text-center">
             <div class="relative inline-block">
-            <img src="https://api.dicebear.com/6.x/initials/svg?seed=<?= htmlspecialchars($username) ?>" 
+            <img src="https://api.dicebear.com/6.x/initials/svg?seed=<?= htmlspecialchars($username) ?>"  
                      class="w-32 h-32 rounded-full border-4 border-indigo-500/30 mb-4">
                 <span class="absolute bottom-4 right-0 bg-green-500 w-5 h-5 rounded-full border-4 border-gray-900"></span>
             </div>
             <h1 class="text-4xl font-bold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
             <?php echo $name?>
             </h1>
-            <p class="text-gray-400 mt-2"><?php echo date('Y/m/d', strtotime($date)); ?></p>
+            <p class="text-gray-400 mt-2">Membre depuis Janvier 2024</p>
         </div>
 
         <div class="grid grid-cols-3 gap-6 mb-12">
             <div class="bg-gray-800/50 backdrop-blur-xl p-6 rounded-xl border border-white/10">
-                <div class="text-3xl font-bold text-indigo-400 mb-1">42</div>
+                <div class="text-3xl font-bold text-indigo-400 mb-1"><?= htmlspecialchars($gameCount) ?></div>
                 <div class="text-gray-400">Jeux</div>
             </div>
             <div class="bg-gray-800/50 backdrop-blur-xl p-6 rounded-xl border border-white/10">
-                <div class="text-3xl font-bold text-indigo-400 mb-1">15</div>
+                <div class="text-3xl font-bold text-indigo-400 mb-1"><?= htmlspecialchars($favoriteCount) ?></div>
                 <div class="text-gray-400">Favoris</div>
             </div>
             <div class="bg-gray-800/50 backdrop-blur-xl p-6 rounded-xl border border-white/10">
-                <div class="text-3xl font-bold text-indigo-400 mb-1">120h</div>
+                <div class="text-3xl font-bold text-indigo-400 mb-1"><?= htmlspecialchars($playTimeHours) ?>h</div>
                 <div class="text-gray-400">Temps de jeu</div>
             </div>
         </div>

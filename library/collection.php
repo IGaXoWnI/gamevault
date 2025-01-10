@@ -1,5 +1,3 @@
-
-
 <?php
 
 require '../classes/game.php';
@@ -173,34 +171,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                          class="w-full h-full object-cover transform transition duration-500 
                                 group-hover:scale-110">
                     <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div class="absolute top-4 right-4 flex space-x-2">
-                    <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                    </div>
+                    
                 </div>
                 <div class="relative p-6" style="z-index:200;">
                     <h3 class="text-xl font-bold mb-3"><?= htmlspecialchars($game['game_title']) ?></h3>
                     <div class="flex items-center justify-between text-sm text-gray-400 mb-4">
-                   
-                            <div class="flex items-center justify-between">
-                       
-                       <div class="flex space-x-1">
-                       <form method="POST" style="display: inline;" 
-                                              onsubmit="return confirm('do you want to delete this game ?  ');">
-                                            <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
-                                            
-                                        </form>     
-                        
-                    </div>
-                    
-                                        
-                                      
+                        <div class="flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-violet-400"></i>
+                                <span><?= htmlspecialchars($game['play_time'] ?? '0') ?> hours</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-gamepad text-violet-400"></i>
+                                <span class="px-2 py-1 rounded-full text-xs 
+                                    <?php
+                                        switch($game['status']) {
+                                            case 'playing':
+                                                echo 'bg-green-500/20 text-green-400';
+                                                break;
+                                            case 'completed':
+                                                echo 'bg-blue-500/20 text-blue-400';
+                                                break;
+                                            case 'dropped':
+                                                echo 'bg-red-500/20 text-red-400';
+                                                break;
+                                            default:
+                                                echo 'bg-gray-500/20 text-gray-400';
+                                        }
+                                    ?>">
+                                    <?= ucfirst(htmlspecialchars($game['status'] ?? 'Not Started')) ?>
+                                </span>
+                            </div>
                         </div>
-                     
                         
+                        <div class="flex items-center justify-between">
+                            <div class="flex space-x-1">
+                                <form method="POST" style="display: inline;" 
+                                      onsubmit="return confirm('do you want to delete this game ?  ');">
+                                    <input type="hidden" name="game_id" value="<?= htmlspecialchars($game['game_id']) ?>">
+                                    <button type="submit" name="delete" class="text-red-400 hover:text-red-300">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>     
+                            </div>
+                        </div>
                     </div>
-                    
                 </div>
                  
                 

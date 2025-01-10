@@ -130,15 +130,21 @@ class Game {
 
 
     public function setGameRating($gameId, $userId, $rating, $review = null) {
-        try {
-            $checkStmt = $this->pdo->prepare("SELECT review_id FROM game_reviews WHERE game_id = ? AND user_id = ?");
+        $checkUserStatus = $this->pdo->prepare("select status from users where user_id = $userId ; ");
+        $checkUserStatus->execute();
+        $userStatus = $checkUserStatus->fetch();  
+        if($userStatus['status'] === "actif"){
+            try {
+            
+                $checkStmt = $this->pdo->prepare("SELECT review_id FROM game_reviews WHERE game_id = ? AND user_id = ?");
             $checkStmt->execute([$gameId, $userId]);
             
             if ($checkStmt->fetch()) {
                 $sql = "UPDATE game_reviews SET rating = ?, review = ?, created_at = NOW() WHERE game_id = ? AND user_id = ?";
                 $stmt = $this->pdo->prepare($sql);
                 return $stmt->execute([$rating, $review, $gameId, $userId]);
-            } else {
+            }
+             else {
                 $sql = "INSERT INTO game_reviews (game_id, user_id, rating, review, created_at) VALUES (?, ?, ?, ?, NOW())";
                 $stmt = $this->pdo->prepare($sql);
                 return $stmt->execute([$gameId, $userId, $rating, $review]);
@@ -146,6 +152,9 @@ class Game {
         } catch (PDOException $e) {
             error_log($e->getMessage());
             return false;
+        }
+        } else {
+            return "You are banned and do not have access to comment or chat on this page.";
         }
     }
 
@@ -164,5 +173,37 @@ class Game {
             return [];
         }
     }
+    public function gamecount(){
+        $gamecount = "SELECT COUNT(*) FROM games";
+        $gamecount_run = $this->pdo->prepare($gamecount);
+        $gamecount_run->execute();
+        return $gamecount_run->fetch(); 
+    }
+    
+    public function gamecountbyuser($userid){
+        $gamecountbyuser = "SELECT COUNT(*) FROM library WHERE user_id = $userid";
+        $gamecountbyuser_run = $this->pdo->prepare($gamecountbyuser);
+        $gamecountbyuser_run->execute();
+        return $gamecountbyuser_run->fetch();
+    }   
+    public function gamecountbyuserstatus($userid, $status) {
+        $gamecountbyuserstatus = "SELECT COUNT(*) FROM library WHERE user_id = :userid AND status = :status";
+        $gamecountbyuserstatus_run = $this->pdo->prepare($gamecountbyuserstatus);
+        $gamecountbyuserstatus_run->execute([
+            ':userid' => $userid,
+            ':status' => $status
+        ]);
+        return $gamecountbyuserstatus_run->fetchColumn();
+    }   
+
+
+    public function timeplayed($userid){
+        $timeplayed = "SELECT SUM(play_time) FROM library WHERE user_id = $userid";
+        $timeplayed_run = $this->pdo->prepare($timeplayed);
+        $timeplayed_run->execute();
+        return $timeplayed_run->fetch();
+    }   
 }
+
+
 ?>
