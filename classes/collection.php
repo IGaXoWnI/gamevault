@@ -1,6 +1,6 @@
 <?php 
 require_once 'database.php';
- class library{
+class library{
     private $library_id;
     private $status;
     private $game_id;
@@ -23,22 +23,29 @@ public function addToLibrary($game_id, $user_id, $play_time, $status) {
     if ($stmt->rowCount() > 0) {
         return false; 
     } else {
-        $games = "INSERT INTO library (game_id, user_id, play_time, status) 
-                  VALUES (:game_id, :user_id, :play_time, :status)";
-        $addToLibrary = $this->pdo->prepare($games);
+        try {
+            $games = "INSERT INTO library (game_id, user_id, play_time, status) 
+                      VALUES (:game_id, :user_id, :play_time, :status)";
+            $addToLibrary = $this->pdo->prepare($games);
 
-        $result = $addToLibrary->execute([
-            ':game_id' => $game_id,
-            ':user_id' => $user_id,
-            ':play_time' => $play_time,
-            ':status' => $status
-        ]);
+            $result = $addToLibrary->execute([
+                ':game_id' => $game_id,
+                ':user_id' => $user_id,
+                ':play_time' => $play_time,
+                ':status' => $status
+            ]);
 
-        if ($result) {
-            return $addToLibrary->fetchAll(PDO::FETCH_ASSOC);
-        } else {
-            echo "Erreur d'exécution de la requête SQL.";
-            return [];
+            if ($result) {
+                require_once 'history.php';
+                $history = new History();
+                $history->addToHistory($game_id, $user_id, 'added');
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Error in addToLibrary: " . $e->getMessage());
+            return false;
         }
     }
 }
@@ -65,15 +72,25 @@ public function showInlibrary() {
     }
 }
 public function removeFromLibrary($gameid){
-    try{
- $game="DELETE FROM library WHERE game_id=:game_id";
- $deletegames=$this->pdo->prepare($game);
- return $deletegames->execute(['game_id'=>$gameid]);
+    try {
+        $game = "DELETE FROM library WHERE game_id=:game_id";
+        $deletegames = $this->pdo->prepare($game);
+        $result = $deletegames->execute(['game_id' => $gameid]);
+        
+        if ($result) {
+            require_once 'history.php';
+            $history = new History();
+            $history->addToHistory($gameid, $_SESSION['user_id'], 'removed');
+        }
+        
+        return $result;
     }
     catch (Exception $e) {
-        echo("Error : " . $e->getMessage());
-       
-    } }}
+        error_log("Error : " . $e->getMessage());
+        return false;
+    }
+}
+}
 
 
  
